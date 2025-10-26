@@ -1,0 +1,9 @@
+#
+muddlib10 clkinvbufdual_4x layout
+I2
+#
+muddlib10 invbuf_4x layout
+I1
+#
+muddlib10 flopen_dp_1x layout
+I0

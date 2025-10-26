@@ -1,0 +1,67 @@
+#
+wordlib8 mux3_1x_8 symbol
+pcmux
+#
+mips8 alu symbol
+alu
+#
+wordlib8 mux4_1x_8 symbol
+src2mux
+#
+muddlib10 mux2_c_1x symbol
+regmux<2:0> 3
+#
+mips8 regramarray_dp symbol
+rf
+#
+wordlib8 flopen_1x_8 symbol
+ir3
+ir2
+ir1
+ir0
+#
+wordlib8 flop_1x_8 symbol
+resreg
+areg
+wrdreg
+datareg
+#
+wordlib8 mux2_1x_8 symbol
+wdmux
+src1mux
+adrmux
+#
+wordlib8 flopenr_1x_8 symbol
+pcreg
+#ISCELL
+basic ipin symbol
+PIN15
+PIN14
+PIN13
+PIN9
+PIN6
+PIN5
+PIN11
+PIN4
+PIN12
+PIN7
+PIN8
+PIN0
+PIN20
+PIN10
+#ISCELL
+basic opin symbol
+PIN17
+PIN16
+PIN2
+PIN3
+PIN1
+#ISCELL
+UofU_Analog_Parts gnd symbol
+I37
+#ISCELL
+UofU_Analog_Parts vdd symbol
+I38
+#ISCELL
+HMC_Sheets_8ths Csize symbol
+I39

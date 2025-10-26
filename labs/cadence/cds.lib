@@ -1,0 +1,5 @@
+INCLUDE /proj/ncsu/ncsu-cdk-1.5.1/cdssetup/cds.lib
+#DEFINE muddlib10 /courses/e158/10/lib/muddlib10
+#DEFINE wordlib8 /courses/e158/10/lib/wordlib8
+#DEFINE mips8 /courses/e158/10/lib/mips8
+DEFINE HMC_Sheets_8ths /courses/e158/10/lib/HMC_Sheets_8ths

@@ -1,0 +1,21 @@
+#
+muddlib10 invbuf_4x symbol
+r2buf<2:0> 3
+r1buf<2:0> 3
+wbuf<2:0> 3
+#ISCELL
+basic ipin symbol
+PIN2
+PIN1
+PIN0
+#ISCELL
+basic opin symbol
+PIN8
+PIN7
+PIN6
+PIN5
+PIN4
+PIN3
+#ISCELL
+HMC_Sheets_8ths Asize.book symbol
+I3

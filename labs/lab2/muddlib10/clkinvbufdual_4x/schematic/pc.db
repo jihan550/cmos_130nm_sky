@@ -1,0 +1,17 @@
+#
+muddlib10 clkinvbuf_4x symbol
+I1
+I0
+#ISCELL
+basic ipin symbol
+PIN6
+PIN7
+#ISCELL
+basic opin symbol
+PIN4
+PIN8
+PIN5
+PIN9
+#ISCELL
+HMC_Sheets_8ths Asize symbol
+I2

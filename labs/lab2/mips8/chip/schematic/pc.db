@@ -1,0 +1,21 @@
+#
+mips8 padframe symbol
+I0
+#
+mips8 core symbol
+I1
+#ISCELL
+basic ipin symbol
+PIN4
+PIN6
+PIN1
+PIN5
+#ISCELL
+basic opin symbol
+PIN7
+PIN3
+PIN2
+PIN0
+#ISCELL
+HMC_Sheets_8ths Asize.book symbol
+I2

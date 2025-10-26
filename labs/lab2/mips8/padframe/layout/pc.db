@@ -1,0 +1,54 @@
+#
+UofU_Pads pad_gnd layout
+I47
+I38
+I55
+I22
+I19
+I17
+#
+UofU_Pads pad_in layout
+I45
+I14
+I49
+I25
+I24
+I52
+I43
+I36
+I39
+I35
+I44
+#
+UofU_Pads pad_out layout
+I4
+I46
+I27
+I26
+I29
+I53
+I54
+I20
+I11
+I50
+I12
+I28
+I5
+I10
+I51
+I15
+I8
+I7
+#
+UofU_Pads pad_vdd layout
+I48
+I30
+I56
+I13
+I31
+#
+UofU_Pads pad_corner layout
+I9
+I42
+I6
+I3

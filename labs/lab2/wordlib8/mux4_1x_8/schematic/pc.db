@@ -1,0 +1,21 @@
+#
+muddlib10 mux4_dp_1x symbol
+mux4_dp_1x<7:0> 8
+#
+muddlib10 invbuf_4x symbol
+I5
+I1
+#ISCELL
+basic ipin symbol
+PIN6
+PIN7
+PIN5
+PIN1
+PIN0
+PIN4
+#ISCELL
+basic opin symbol
+PIN3
+#ISCELL
+HMC_Sheets_8ths Asize.book symbol
+I7

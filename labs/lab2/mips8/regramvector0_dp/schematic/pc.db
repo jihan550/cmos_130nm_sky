@@ -1,0 +1,17 @@
+#
+mips8 regram0_zipper symbol
+I3
+#
+mips8 regram0 symbol
+regram0<7:0> 8
+#ISCELL
+basic ipin symbol
+PIN15
+PIN16
+#ISCELL
+basic iopin symbolr
+PIN0
+PIN1
+#ISCELL
+HMC_Sheets_8ths Asize.book symbol
+I4

@@ -1,0 +1,16 @@
+#
+# Edit Lock-Stake file. CAUTION: Please do not change.
+#
+# Information about current Edit Lock Owner.
+#
+LockStakeVersion               1.1
+LoginName                      test
+HostName                       chips.eng.hmc.edu
+ProcessIdentifier              7864
+ProcessCreationTime_UTC        1264102168
+ProcessCreationTime_Readable   Thu Jan 21 11:29:28 2010 PST
+AppIdentifier                  /cad/cds/ic/tools/dfII/bin/icfb.exe
+OSType                         lnx86
+ReasonForPlacingEditLock       XXopen upgrade lock
+FilePathUsedToEditLock         /courses/e158/10/lib/muddlib10/inv_4x/layout/layout.cdb
+TimeEditLocked                 Thu Jan 21 11:36:31 2010 PST

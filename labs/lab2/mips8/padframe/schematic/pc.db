@@ -1,0 +1,68 @@
+#
+UofU_Pads pad_gnd symbol
+I42
+I39
+I37
+I34
+I32
+I20
+#
+UofU_Pads pad_out symbol
+I41
+I29
+I28
+I27
+I26
+I25
+I24
+I23
+I22
+I19
+I18
+I17
+I15
+I14
+I12
+I11
+I30
+I8
+#
+UofU_Pads pad_in symbol
+I38
+I13
+I10
+I7
+I6
+I5
+I4
+I3
+I2
+I1
+I0
+#
+UofU_Pads pad_vdd symbol
+I40
+I35
+I33
+I31
+I21
+#ISCELL
+basic ipin symbol
+PIN8
+PIN16
+PIN0
+PIN4
+PIN10
+PIN9
+PIN11
+PIN3
+#ISCELL
+basic opin symbol
+PIN5
+PIN14
+PIN7
+PIN1
+PIN6
+PIN13
+PIN12
+PIN2

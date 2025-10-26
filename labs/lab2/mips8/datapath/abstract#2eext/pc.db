@@ -1,0 +1,35 @@
+#
+mips8 alu layout
+alu
+#
+wordlib8 flopenr_1x_8 layout
+pcreg
+#
+wordlib8 mux3_1x_8 layout
+pcmux
+#
+wordlib8 mux4_1x_8 layout
+src2mux
+#
+wordlib8 flop_1x_8 layout
+resreg
+areg
+wrdreg
+datareg
+#
+muddlib10 mux2_c_1x layout
+I0
+#
+mips8 regramarray_dp layout
+rf
+#
+wordlib8 flopen_1x_8 layout
+ir3
+ir2
+ir1
+ir0
+#
+wordlib8 mux2_1x_8 layout
+src1mux
+wdmux
+adrmux

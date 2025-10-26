@@ -1,0 +1,434 @@
+library(muddlib) {
+
+    /* 
+	Adapted 12/30/00 David_Harris@hmc.edu from lsi_10k library
+	supplied with Synopysis tools to contain the cells for the
+	Harvey Mudd College E158 class standard cell library.
+
+	The delays in this library are not adjusted to reflect the
+	MOSIS processes.
+
+	Adapted 14 Jan 2010 David_Harris@hmc.edu to describe muddlib.
+    */
+
+    in_place_swap_mode : match_footprint;
+
+    default_inout_pin_cap        :  1.0;
+    default_inout_pin_fall_res   :  0.0;
+    default_inout_pin_rise_res   :  0.0;
+    default_input_pin_cap        :  1.0;
+    default_intrinsic_fall       :  1.0;
+    default_intrinsic_rise       :  1.0;
+    default_output_pin_cap       :  0.0;
+    default_output_pin_fall_res  :  0.0;
+    default_output_pin_rise_res  :  0.0;
+    default_slope_fall           :  0.0;
+    default_slope_rise           :  0.0;
+    default_fanout_load          :  1.0;
+
+    
+    k_process_drive_fall         :  1.0;
+    k_process_drive_rise         :  1.0;
+    k_process_intrinsic_fall     :  1.0;
+    k_process_intrinsic_rise     :  1.0;
+    k_process_pin_cap            :  0.0;
+    k_process_slope_fall         :  1.0;
+    k_process_slope_rise         :  1.0;
+    k_process_wire_cap           :  0.0;
+    k_process_wire_res           :  1.0;
+    k_temp_drive_fall            :  0.0037;
+    k_temp_drive_rise            :  0.0037;
+    k_temp_intrinsic_fall        :  0.0037;
+    k_temp_intrinsic_rise        :  0.0037;
+    k_temp_pin_cap               :  0.0;
+    k_temp_slope_fall            :  0.0;
+    k_temp_slope_rise            :  0.0;
+    k_temp_wire_cap              :  0.0;
+    k_temp_wire_res              :  0.0;
+    k_volt_drive_fall            : -0.26;
+    k_volt_drive_rise            : -0.26;
+    k_volt_intrinsic_fall        : -0.26;
+    k_volt_intrinsic_rise        : -0.26;
+    k_volt_pin_cap               :  0.0;
+    k_volt_slope_fall            :  0.0;
+    k_volt_slope_rise            :  0.0;
+    k_volt_wire_cap              :  0.0;
+    k_volt_wire_res              :  0.0;
+
+    time_unit : "1ns";
+    voltage_unit : "1V";
+    current_unit : "1uA";
+    pulling_resistance_unit : "1kohm";
+    capacitive_load_unit (0.1,ff);
+
+    nom_process                  :  1.0;
+    nom_temperature 	         : 25.0;
+    nom_voltage                  :  5.0;
+
+
+    operating_conditions(WCCOM) {
+	process : 1.5 ;
+        temperature : 70 ;
+	voltage : 4.75 ;
+	tree_type : "worst_case_tree" ;
+    }
+    operating_conditions(WCIND) {
+        process : 1.5 ;
+        temperature : 85 ;
+        voltage : 4.75 ;
+        tree_type : "worst_case_tree" ;
+    }
+    operating_conditions(WCMIL) {
+        process : 1.5 ;
+        temperature : 125 ;
+        voltage : 4.5 ;
+        tree_type : "worst_case_tree" ;
+    }
+    operating_conditions(BCCOM) {
+        process : 0.6 ;
+        temperature : 0 ;
+        voltage : 5.25 ;
+        tree_type : "best_case_tree" ;
+    }
+    operating_conditions(BCIND) {
+        process : 0.6 ;
+        temperature : -40 ;
+        voltage : 5.25 ;
+        tree_type : "best_case_tree" ;
+    }
+    operating_conditions(BCMIL) {
+        process : 0.6 ;
+        temperature : -55 ;
+        voltage : 5.5 ;
+        tree_type : "best_case_tree" ;
+    }
+
+    wire_load("05x05") {
+        resistance : 0 ;
+        capacitance : 1 ;
+        area : 0 ;
+        slope : 0.186 ;
+        fanout_length(1,0.39) ;
+    }
+    wire_load("10x10") {
+        resistance : 0 ;
+        capacitance : 1 ;
+        area : 0 ;
+        slope : 0.311 ;
+        fanout_length(1,0.53) ;
+    }
+    wire_load("20x20") {
+        resistance : 0 ;
+        capacitance : 1 ;
+        area : 0 ;
+        slope : 0.547 ;
+        fanout_length(1,0.86) ;
+    }
+    wire_load("30x30") {
+        resistance : 0 ;
+        capacitance : 1 ;
+        area : 0 ;
+        slope : 0.782 ;
+        fanout_length(1,1.40) ;
+    }
+    wire_load("40x40") {
+        resistance : 0 ;
+        capacitance : 1 ;
+        area : 0 ;
+        slope : 1.007 ;
+        fanout_length(1,1.90) ;
+    }
+    wire_load("50x50") {
+        resistance : 0 ;
+        capacitance : 1 ;
+        area : 0 ;
+        slope : 1.218 ;
+        fanout_length(1,1.80) ;
+    }
+    wire_load("60x60") {
+        resistance : 0 ;
+        capacitance : 1 ;
+        area : 0 ;
+        slope : 1.391 ;
+        fanout_length(1,1.70) ;
+    }
+    wire_load("70x70") {
+        resistance : 0 ;
+        capacitance : 1 ;
+        area : 0 ;
+        slope : 1.517 ;
+        fanout_length(1,1.80) ;
+    }
+    wire_load("80x80") {
+        resistance : 0 ;
+        capacitance : 1 ;
+        area : 0 ;
+        slope : 1.590 ;
+        fanout_length(1,1.80) ;
+    }
+    wire_load("90x90") {
+        resistance : 0 ;
+        capacitance : 1 ;
+        area : 0 ;
+        slope : 1.64 ;
+        fanout_length(1,1.9) ;
+    }
+
+cell(inv_1x) {
+  cell_footprint : inv;
+  area : 158.4;
+  pin(a) {
+    direction : input;
+    capacitance : 1;
+  }
+  pin(y) {
+    direction : output;
+    function : "a'";
+    timing() {
+      intrinsic_rise : 0.38;
+      intrinsic_fall : 0.15;
+      rise_resistance : 0.1443;
+      fall_resistance : 0.0589;
+      slope_rise : 0.0;
+      slope_fall : 0.0;
+      related_pin : "a";
+    }
+  }
+}
+cell(nand2_1x) {
+  cell_footprint : nand2;
+  area : 237.6;
+  pin(a) {
+    direction : input;
+    capacitance : 1;
+  }
+  pin(b) {
+    direction : input;
+    capacitance : 1;
+  }
+  pin(y) {
+    direction : output;
+    function : "(a b)'";
+    timing() {
+      intrinsic_rise : 0.5;
+      intrinsic_fall : 0.13;
+      rise_resistance : 0.1377;
+      fall_resistance : 0.0854;
+      slope_rise : 0.0;
+      slope_fall : 0.0;
+      related_pin : "a";
+    }
+    timing() {
+      intrinsic_rise : 0.5;
+      intrinsic_fall : 0.13;
+      rise_resistance : 0.1377;
+      fall_resistance : 0.0854;
+      slope_rise : 0.0;
+      slope_fall : 0.0;
+      related_pin : "b";
+    }
+  }
+}
+cell(nor2_1x) {
+  cell_footprint : nor2;
+  area : 237.6;
+  pin(a) {
+    direction : input;
+    capacitance : 1;
+  }
+  pin(b) {
+    direction : input;
+    capacitance : 1;
+  }
+  pin(y) {
+    direction : output;
+    function : "(a+b)'";
+    timing() {
+      intrinsic_rise : 0.55;
+      intrinsic_fall : 0.25;
+      rise_resistance : 0.2589;
+      fall_resistance : 0.0589;
+      slope_rise : 0.0;
+      slope_fall : 0.0;
+      related_pin : "a";
+    }
+    timing() {
+      intrinsic_rise : 0.55;
+      intrinsic_fall : 0.25;
+      rise_resistance : 0.2589;
+      fall_resistance : 0.0589;
+      slope_rise : 0.0;
+      slope_fall : 0.0;
+      related_pin : "b";
+    }
+  }
+}
+cell(nand3_1x) {
+  cell_footprint : nand3;
+  area : 316.8;
+  pin(a) {
+    direction : input;
+    capacitance : 1;
+  }
+  pin(b) {
+    direction : input;
+    capacitance : 1;
+  }
+  pin(c) {
+    direction : input;
+    capacitance : 1;
+  }
+  pin(y) {
+    direction : output;
+    function : "(a b c)'";
+    timing() {
+      intrinsic_rise : 0.65;
+      intrinsic_fall : 0.37;
+      rise_resistance : 0.1411;
+      fall_resistance : 0.1146;
+      slope_rise : 0.0;
+      slope_fall : 0.0;
+      related_pin : "a";
+    }
+    timing() {
+      intrinsic_rise : 0.65;
+      intrinsic_fall : 0.37;
+      rise_resistance : 0.1411;
+      fall_resistance : 0.1146;
+      slope_rise : 0.0;
+      slope_fall : 0.0;
+      related_pin : "b";
+    }
+    timing() {
+      intrinsic_rise : 0.65;
+      intrinsic_fall : 0.37;
+      rise_resistance : 0.1411;
+      fall_resistance : 0.1146;
+      slope_rise : 0.0;
+      slope_fall : 0.0;
+      related_pin : "c";
+    }
+  }
+}
+cell(nor3_1x) {
+  cell_footprint : nor3;
+  area : 316.8;
+  pin(a) {
+    direction : input;
+    capacitance : 1;
+  }
+  pin(b) {
+    direction : input;
+    capacitance : 1;
+  }
+  pin(c) {
+    direction : input;
+    capacitance : 1;
+  }
+  pin(y) {
+    direction : output;
+    function : "(a+b+c)'";
+    timing() {
+      intrinsic_rise : 0.81;
+      intrinsic_fall : 0.25;
+      rise_resistance : 0.3864;
+      fall_resistance : 0.0589;
+      slope_rise : 0.0;
+      slope_fall : 0.0;
+      related_pin : "a";
+    }
+    timing() {
+      intrinsic_rise : 0.81;
+      intrinsic_fall : 0.25;
+      rise_resistance : 0.3864;
+      fall_resistance : 0.0589;
+      slope_rise : 0.0;
+      slope_fall : 0.0;
+      related_pin : "b";
+    }
+    timing() {
+      intrinsic_rise : 0.81;
+      intrinsic_fall : 0.25;
+      rise_resistance : 0.3864;
+      fall_resistance : 0.0589;
+      slope_rise : 0.0;
+      slope_fall : 0.0;
+      related_pin : "c";
+    }
+  }
+}
+cell(latch_c_1x) {
+  cell_footprint : latch;
+  area : 792;
+  pin(d) {
+    direction : input;
+    capacitance : 1;
+    timing() {
+      timing_type : setup_falling;
+      intrinsic_rise : 0.4;
+      intrinsic_fall : 0.4;
+      related_pin : "ph";
+    }
+    timing() {
+      timing_type : hold_falling;
+      intrinsic_rise : 0.4;
+      intrinsic_fall : 0.4;
+      related_pin : "ph";
+    }
+  }
+  pin(ph) {
+    direction : input;
+    capacitance : 1;
+    min_pulse_width_high : 1.5;
+    min_pulse_width_low : 1.5;
+  }
+/*
+  state ("IQ","IQN") {
+    force_01 : "G D'";
+    force_10 : "G D";
+  }
+*/
+/*  latch ("IQ") {
+    enable : "ph";
+    data_in : "d";
+  }
+    statetable ( "  d   ph ", " q  ") {
+	table  : "  -   L : - :  N , \
+                   H/L  H  : - : H/L ";
+    }*/
+
+  latch ("IQ","IQN") {
+    enable : "ph";
+    data_in : "d";
+  }
+/*    statetable ( "  d   ph ", " Q  QN") {
+	table  : "  -   L : - - :  N   N, \
+                   H/L  H  : - - : H/L L/H";
+    }*/
+
+  pin(q) {
+    direction : output;
+    function : "IQ";
+    internal_node : "q"
+    timing() {
+      timing_type : rising_edge;
+      intrinsic_rise : 0.89;
+      intrinsic_fall : 0.86;
+      rise_resistance : 0.1458;
+      fall_resistance : 0.0653;
+      related_pin : "ph";
+    }
+    timing() {
+      timing_sense : positive_unate;
+      intrinsic_rise : 0.89;
+      intrinsic_fall : 0.86;
+      rise_resistance : 0.1458;
+      fall_resistance : 0.0653;
+      related_pin : "d";
+    }
+  }
+}
+
+
+} /* End of library e158.lib */
+

@@ -1,0 +1,91 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; derived from iccRevision "1.0" for ami library
+; modified to target ncsu cdk and technology
+; corrected to match SCMOS scalable rules
+; Erik Brunvand, University of Utah
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+iccRevision = "2.0"
+iccTechnologyFile = "UofU_TechLib_ami06"
+
+iccLayers =
+    list(
+	list( '("metal3" "drawing") "metal" "horizontal" 1.5 0.9 nil t)
+	list( '("via2" "drawing") "cut" "off" 0.6 0.9 nil t)
+	list( '("metal2" "drawing") "metal" "vertical" 0.9 0.9 nil t)
+	list( '("via" "drawing") "cut" "off" 0.6 0.9 nil t)
+	list( '("metal1" "drawing") "metal" "horizontal" 0.9 0.9 nil t)
+	list( '("cc" "drawing") "cut" "off" 0.6 0.9 nil t)
+	list( '("poly" "drawing") "polysilicon" "off" 0.6 0.9 t t)
+	list( '("elec" "drawing") "polysilicon" "off" 1.2 0.9 t t)
+	list( '("nactive" "drawing") "none" "off" 0.9 0.9 t t)
+	list( '("pactive" "drawing") "none" "off" 0.9 0.9 t t)
+	list( '("active" "drawing") "none" "off" 0.9 0.9 t t)
+	list( '("nwell" "drawing") "n_well" "off" 3.6 5.4 t t)
+    )
+
+iccVias =
+    list(
+	list( '("UofU_TechLib_ami06" "M2_M1" "symbolic") t)
+	list( '("UofU_TechLib_ami06" "M3_M2" "symbolic") t)
+    )
+
+iccEquivalentLayers =
+    list(
+	list(
+	    '("metal3" "drawing")
+	    '("metal3" "net")
+	    '("metal3" "pin")
+	)
+	list(
+	    '("via2" "drawing")
+	    '("via2" "net")
+	)
+	list(
+	    '("metal2" "drawing")
+	    '("metal2" "net")
+	    '("metal2" "pin")
+	)
+	list(
+	    '("via" "drawing")
+	    '("via" "net")
+	)
+	list(
+	    '("metal1" "drawing")
+	    '("metal1" "net")
+	    '("metal1" "pin")
+	)
+	list(
+	    '("poly" "drawing")
+	    '("poly" "net")
+	)
+    )
+
+iccBoundaryLayers =
+    list(
+	list( '("metal3" "drawing") '("prBoundary" "drawing") 0.45)
+	list( '("via2" "drawing") '("prBoundary" "drawing") 0.45)
+	list( '("metal2" "drawing") '("prBoundary" "drawing") 0.45)
+	list( '("via" "drawing") '("prBoundary" "drawing") 0.45)
+	list( '("metal1" "drawing") '("prBoundary"  "drawing") 0.45)
+	list( '("cc" "drawing") '("prBoundary" "drawing") 0.45)
+	list( '("poly" "drawing") '("prBoundary" "drawing") 0.45)
+	list( '("elec" "drawing") '("prBoundary" "drawing") 0.0)
+	list( '("nactive" "drawing") '("prBoundary" "drawing") 0.0)
+	list( '("pactive" "drawing") '("prBoundary" "drawing") 0.0)
+	list( '("active" "drawing") '("prBoundary" "drawing") 0.0)
+	list( '("nwell" "drawing") '("prBoundary" "drawing") 0.0)
+    )
+
+iccKeepouts = list(
+ list(nil
+  list(
+    list("and" list('("elec" "drawing") '("elec" "drawing")) '("metal2" "drawing") "routing" t)
+    list("and" list('("elec" "drawing") '("elec" "drawing")) '("metal1" "drawing") "routing" t)
+    list("and" list('("highres" "drawing") '("highres" "drawing")) '("metal1" "drawing") "routing" t)
+    list("and" list('("highres" "drawing") '("highres" "drawing")) '("metal2" "drawing") "routing" t)
+;check NOTES
+;   list("and" list('("NOTES" "drawing") '("NOTES" "drawing")) '("metal1" "drawing") "routing" t)
+;   list("and" list('("NOTES" "drawing") '("NOTES" "drawing")) '("metal2" "drawing") "routing" t)
+       )
+    )
+)

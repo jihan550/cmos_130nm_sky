@@ -1,0 +1,30 @@
+#
+muddlib10 nand5_1x symbol
+I6
+#
+muddlib10 invbuf_4x symbol
+I5
+I4
+I3
+#
+muddlib10 nand3_1x symbol
+I1
+I0
+#ISCELL
+basic ipin symbol
+PIN17
+PIN18
+PIN7
+PIN6
+PIN19
+#ISCELL
+basic opin symbol
+PIN16
+PIN15
+PIN14
+PIN13
+PIN12
+PIN11
+#ISCELL
+HMC_Sheets_8ths Asize.book symbol
+I7

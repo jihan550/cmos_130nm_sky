@@ -1,0 +1,30 @@
+#
+mips8 regramadrbuf symbol
+I16
+#
+mips8 regramvector_dp symbol
+I15
+I14
+I13
+I12
+I11
+I10
+I9
+#
+mips8 regramvector0_dp symbol
+I0
+#ISCELL
+basic ipin symbol
+PIN7
+PIN6
+PIN5
+PIN8
+PIN10
+PIN9
+#ISCELL
+basic opin symbol
+PIN4
+PIN3
+#ISCELL
+HMC_Sheets_8ths Asize symbol
+I17

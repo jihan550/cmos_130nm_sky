@@ -1,0 +1,11 @@
+#
+muddlib10 nand2_1x layout
+I6
+I2
+#
+muddlib10 nor2_1x layout
+I7
+I5
+I4
+I3
+I1

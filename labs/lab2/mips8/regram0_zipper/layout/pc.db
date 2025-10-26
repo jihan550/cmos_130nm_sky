@@ -1,0 +1,8 @@
+#
+muddlib10 nand3_1x layout
+I5
+I3
+#
+muddlib10 invbuf_4x layout
+I4
+I2

@@ -1,0 +1,25 @@
+#
+muddlib10 inv_4x symbol
+I3
+#
+muddlib10 invbuf_4x symbol
+I2
+#
+muddlib10 clkinvbufdual_4x symbol
+I1
+#
+muddlib10 flopenr_dp_1x symbol
+flopenr_dp_1x<7:0> 8
+#ISCELL
+basic ipin symbol
+PIN4
+PIN2
+PIN3
+PIN1
+PIN0
+#ISCELL
+basic opin symbol
+PIN5
+#ISCELL
+HMC_Sheets_8ths Asize.book symbol
+I4

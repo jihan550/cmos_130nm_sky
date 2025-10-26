@@ -1,0 +1,12 @@
+#
+muddlib10 inv_1x symbol
+inv_1x<7:0> 8
+#ISCELL
+basic ipin symbol
+PIN0
+#ISCELL
+basic opin symbol
+PIN1
+#ISCELL
+HMC_Sheets_8ths Asize.book symbol
+I2

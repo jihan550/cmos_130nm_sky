@@ -1,0 +1,10 @@
+#
+NCSU_Analog_Parts pmos4 ivpcell
++3
++4
++5
+#
+NCSU_Analog_Parts nmos4 ivpcell
++0
++1
++2

@@ -1,0 +1,15 @@
+#
+mips8 regramadrbuf layout
+I12
+#
+mips8 regramvector_dp layout
+I7
+I6
+I5
+I4
+I3
+I0
+I2
+#
+mips8 regramvector0_dp layout
+I1

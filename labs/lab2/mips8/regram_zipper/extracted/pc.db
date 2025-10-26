@@ -1,0 +1,12 @@
+#
+muddlib10 invbuf_4x excell
+I1
+I2
+I4
+#
+muddlib10 nand3_1x excell
+I3
+I5
+#
+muddlib10 nand5_1x excell
+I6

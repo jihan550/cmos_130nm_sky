@@ -1,0 +1,13 @@
+#
+muddlib10 inv_1x symbol
+I3
+#
+muddlib10 nand2_1x symbol
+I2
+#ISCELL
+basic ipin symbol
+PIN1
+PIN0
+#ISCELL
+basic opin symbol
+PIN2

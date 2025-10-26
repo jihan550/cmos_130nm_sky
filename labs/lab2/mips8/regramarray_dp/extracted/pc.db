@@ -1,0 +1,15 @@
+#
+mips8 regramadrbuf excell
++0
+#
+mips8 regramvector0_dp excell
+I1
+#
+mips8 regramvector_dp excell
+I2
+I0
+I3
+I4
+I5
+I6
+I7

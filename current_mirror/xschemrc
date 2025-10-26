@@ -1,0 +1,4 @@
+source /usr/local/share/pdk/sky130B/libs.tech/xschem/xschemrc
+# text rendering (Cairo) – global
+set cairo_font_scale 1.2
+set cairo_font_name {DejaVu Sans Mono}

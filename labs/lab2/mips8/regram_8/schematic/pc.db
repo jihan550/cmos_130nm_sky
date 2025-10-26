@@ -1,0 +1,19 @@
+#
+mips8 regram_dp symbol
+regram_dp<7:0> 8
+#ISCELL
+basic ipin symbol
+PIN5
+PIN4
+PIN3
+PIN2
+PIN1
+PIN0
+#ISCELL
+basic iopin symbolr
+PIN6
+PIN9
+PIN10
+#ISCELL
+HMC_Sheets_8ths Asize.book symbol
+I1

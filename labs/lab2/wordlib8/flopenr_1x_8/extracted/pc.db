@@ -1,0 +1,19 @@
+#
+muddlib10 flopenr_dp_1x excell
++7
++6
++5
++4
++3
++2
++1
++0
+#
+muddlib10 invbuf_4x excell
+I1
+#
+muddlib10 inv_4x excell
+I2
+#
+muddlib10 clkinvbufdual_4x excell
+I3

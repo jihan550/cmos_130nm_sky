@@ -1,0 +1,46 @@
+#
+UofU_Analog_Parts r_nmos symbol
+M10
+#
+UofU_Analog_Parts r_pmos symbol
+M8
+#
+UofU_Analog_Parts pmos symbol
+M15
+M13
+M9
+M5
+M4
+M3
+M2
+#
+UofU_Analog_Parts nmos symbol
+M14
+M12
+M11
+M7
+M6
+M1
+M0
+#ISCELL
+UofU_Analog_Parts vdd symbol
+I0
+#ISCELL
+UofU_Analog_Parts gnd symbol
+I1
+#ISCELL
+basic ipin symbol
+PIN0
+PIN4
+PIN5
+PIN1
+PIN3
+PIN2
+#ISCELL
+basic iopin symbolr
+PIN9
+PIN11
+PIN10
+#ISCELL
+HMC_Sheets_8ths Asize.book symbol
+I2
