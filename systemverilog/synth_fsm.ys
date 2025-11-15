@@ -1,0 +1,28 @@
+# synth_fsm.ys - SystemVerilog FSM → sky130_fd_sc_hd → SPICE (compatible with older Yosys)
+
+# 1. Read RTL
+read_verilog -sv fsm.sv
+
+# 2. Top module
+hierarchy -check -top fsm_example
+
+# 3. RTL → generic netlist
+proc
+opt
+fsm
+opt
+techmap
+opt
+
+# 4. Map to sky130_fd_sc_hd (use your confirmed path)
+read_liberty -lib /home/jihan/eda/open_pdks/sky130/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+
+dfflibmap -liberty /home/jihan/eda/open_pdks/sky130/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+abc       -liberty /home/jihan/eda/open_pdks/sky130/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+
+clean
+stat
+
+# 5. Outputs
+write_verilog fsm_synth.v
+write_spice   fsm_synth.spice
