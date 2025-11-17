@@ -1,9 +1,42 @@
 #!/usr/bin/env tclsh
 
-# ================== Helper procs ================== #
+# ================== Color Helpers ================== #
+# ANSI color codes (Tcl-safe: brackets escaped)
+set COLOR_RESET  "\033\[0m"
+set COLOR_RED    "\033\[31m"
+set COLOR_GREEN  "\033\[32m"
+set COLOR_YELLOW "\033\[33m"
+set COLOR_BLUE   "\033\[34m"
+set COLOR_MAG    "\033\[35m"
+set COLOR_CYAN   "\033\[36m"
+set COLOR_BOLD   "\033\[1m"
+set COLOR_AMBER  "\033\[93m"  
+set COLOR_BRIGHT_CYAN "\033\[96m" 
+set COLOR_MAGENTA "\033\[95m"
+set COLOR_BRIGHT_BLUE "\033\[94m"
+set COLOR_BRIGHT_RED "\033\[91m"
+
+proc color {txt clr} {
+    return "${clr}${txt}\033\[0m"
+}
+
+proc log_info {msg} {
+    puts [color $msg $::COLOR_BRIGHT_CYAN]
+}
+proc log_success {msg} {
+    puts [color $msg $::COLOR_GREEN]
+}
+proc log_warn {msg} {
+    puts [color $msg $::COLOR_AMBER]
+}
+proc log_error {msg} {
+    puts [color $msg $::COLOR_BRIGHT_RED]
+}
+
+# ================== Helper Procs ================== #
 
 proc usage {} {
-    puts "Usage: updateEDA <flag>"
+    log_error "Usage: updateEDA <flag>"
     puts "  -x : update xschem          (uses \$XSCHEM_TOP)"
     puts "  -m : update magic           (uses \$MAGIC_TOP)"
     puts "  -y : update yosys           (uses \$YOSYS_TOP)"
@@ -14,14 +47,14 @@ proc usage {} {
 }
 
 proc run_cmd {cmd_list} {
-    puts "\n>>> Running: [join $cmd_list { }]"
+    puts ""
+    puts [color ">>> [join $cmd_list { }]" $::COLOR_BLUE]
     if {[catch {eval exec $cmd_list} result]} {
-        puts "!!! Command failed: [join $cmd_list { }]"
-        puts "Output / error:"
-        puts $result
+        log_error "!!! Command failed: [join $cmd_list { }]"
+        puts "$result"
         exit 1
     } else {
-        puts $result
+        puts "$result"
     }
 }
 
@@ -49,8 +82,8 @@ set special_config ""
 switch -- $flag {
     -x {
         set tool "xschem"
-        if {![info exists ::env(XSCHEM_TOP)]} {
-            puts "Error: XSCHEM_TOP is not set in your environment."
+        if {![::info exists ::env(XSCHEM_TOP)]} {
+            log_error "Error: XSCHEM_TOP is not set in your environment."
             exit 1
         }
         set dir $::env(XSCHEM_TOP)
@@ -60,8 +93,8 @@ switch -- $flag {
     }
     -m {
         set tool "magic"
-        if {![info exists ::env(MAGIC_TOP)]} {
-            puts "Error: MAGIC_TOP is not set in your environment."
+        if {![::info exists ::env(MAGIC_TOP)]} {
+            log_error "Error: MAGIC_TOP is not set in your environment."
             exit 1
         }
         set dir $::env(MAGIC_TOP)
@@ -71,8 +104,8 @@ switch -- $flag {
     }
     -y {
         set tool "yosys"
-        if {![info exists ::env(YOSYS_TOP)]} {
-            puts "Error: YOSYS_TOP is not set in your environment."
+        if {![::info exists ::env(YOSYS_TOP)]} {
+            log_error "Error: YOSYS_TOP is not set in your environment."
             exit 1
         }
         set dir $::env(YOSYS_TOP)
@@ -81,8 +114,8 @@ switch -- $flag {
     }
     -i {
         set tool "icarus (iverilog)"
-        if {![info exists ::env(ICARUS_TOP)]} {
-            puts "Error: ICARUS_TOP is not set in your environment."
+        if {![::info exists ::env(ICARUS_TOP)]} {
+            log_error "Error: ICARUS_TOP is not set in your environment."
             exit 1
         }
         set dir $::env(ICARUS_TOP)
@@ -91,8 +124,8 @@ switch -- $flag {
     }
     -p {
         set tool "open_pdks"
-        if {![info exists ::env(OPEN_PDKS)]} {
-            puts "Error: OPEN_PDKS is not set in your environment."
+        if {![::info exists ::env(OPEN_PDKS)]} {
+            log_error "Error: OPEN_PDKS is not set in your environment."
             exit 1
         }
         set dir $::env(OPEN_PDKS)
@@ -101,8 +134,8 @@ switch -- $flag {
     }
     -o {
         set tool "openlane2"
-        if {![info exists ::env(OPENLANE)]} {
-            puts "Error: OPENLANE is not set in your environment."
+        if {![::info exists ::env(OPENLANE)]} {
+            log_error "Error: OPENLANE is not set in your environment."
             exit 1
         }
         set dir $::env(OPENLANE)
@@ -116,16 +149,16 @@ switch -- $flag {
     }
 }
 
-puts "Selected tool: $tool"
-puts "Source directory: $dir"
+log_info "Selected tool: $tool"
+log_info "Source directory: $dir"
 
 if {![file isdirectory $dir]} {
-    puts "Error: $dir is not a directory."
+    log_error "Error: $dir is not a directory."
     exit 1
 }
 
 cd $dir
-puts "Current directory: [pwd]"
+log_info "Current directory: [pwd]"
 
 # ================== 1. git pull (if git repo) ================== #
 
@@ -135,51 +168,49 @@ if {![catch {exec git rev-parse --is-inside-work-tree} _]} {
 }
 
 if {$is_git_repo} {
-    puts "\n>>> Running: git pull"
+    puts ""
+    puts [color ">>> git pull" $::COLOR_BLUE]
     if {[catch {exec git pull} git_out]} {
-        puts "!!! Command failed: git pull"
-        puts "Output / error:"
-        puts $git_out
+        log_error "!!! Command failed: git pull"
+        puts "$git_out"
         exit 1
     } else {
-        puts $git_out
+        puts "$git_out"
         # If repo is already up to date, skip rebuild/install for all tools
         if {[string match "*Already up to date.*" $git_out] || \
             [string match "*Already up-to-date.*" $git_out]} {
-            puts "\n$tool is already up to date. No rebuild or install needed."
+            log_warn "$tool is already up to date. No rebuild or install needed 😁"
             exit 0
         }
     }
 } else {
-    puts "Not a git repository (skipping git pull)."
+    log_warn "Not a git repository (skipping git pull)."
 }
 
 # ================== Special case: openlane2 ================== #
 
 if {$special_config eq "openlane2"} {
-    # Update submodules (if any)
     if {$is_git_repo} {
-        puts "Updating git submodules for openlane2..."
+        log_info "Updating git submodules for openlane2..."
         run_cmd {git submodule update --init --recursive}
     }
 
-    # If it's a Python project, reinstall in editable mode
     if {[file exists "pyproject.toml"] || [file exists "setup.py"]} {
-        puts "Detected Python project (pyproject.toml/setup.py)."
-        puts "Running 'pip3 install -e .' for openlane2 (no sudo)."
+        log_info "Detected Python project (pyproject.toml/setup.py)."
+        log_info "Running 'pip3 install -e .' for openlane2 (no sudo)."
         run_cmd {pip3 install -e .}
     } else {
-        puts "No pyproject.toml or setup.py found; skipping pip install for openlane2."
+        log_warn "No pyproject.toml or setup.py found; skipping pip install for openlane2."
     }
 
     if {[llength $version_cmd] > 0} {
-        puts "\nChecking $tool version:"
+        log_info "Checking $tool version:"
         run_cmd $version_cmd
     } else {
-        puts "\nNo version command defined for $tool, skipping version check."
+        log_warn "No version command defined for $tool, skipping version check."
     }
 
-    puts "\nDone updating $tool!"
+    log_success "Done updating $tool!"
     exit 0
 }
 
@@ -187,13 +218,13 @@ if {$special_config eq "openlane2"} {
 
 if {[file executable "./configure"]} {
     if {$special_config eq "xschem"} {
-        # Force xschem into /usr/local, so binary is /usr/local/bin/xschem
+        # xschem -> force /usr/local
         run_cmd [list ./configure "--prefix=/usr/local"]
     } else {
         run_cmd {./configure}
     }
 } else {
-    puts "No ./configure script found, skipping configure step."
+    log_warn "No ./configure script found, skipping configure step."
 }
 
 # ===== Special case: magic =====
@@ -209,11 +240,11 @@ if {$special_config eq "magic"} {
     run_cmd $install_cmd
 
     if {[llength $version_cmd] > 0} {
-        puts "\nChecking $tool version:"
+        log_info "Checking $tool version:"
         run_cmd $version_cmd
     }
 
-    puts "\nDone updating $tool!"
+    log_success "Done updating $tool!"
     exit 0
 }
 
@@ -222,7 +253,7 @@ if {$special_config eq "magic"} {
 if {[file exists "Makefile"] || [file exists "makefile"]} {
     run_cmd [list make "-j$jobs"]
 } else {
-    puts "No Makefile found, skipping 'make' step."
+    log_warn "No Makefile found, skipping 'make' step."
 }
 
 # ================== 4. make install (generic for others) ================== #
@@ -234,16 +265,16 @@ if {[file exists "Makefile"] || [file exists "makefile"]} {
     }
     run_cmd $install_cmd
 } else {
-    puts "No Makefile found, skipping 'make install'."
+    log_warn "No Makefile found, skipping 'make install'."
 }
 
 # ================== 5. version check ================== #
 
 if {[llength $version_cmd] > 0} {
-    puts "\nChecking $tool version:"
+    log_info "Checking $tool version:"
     run_cmd $version_cmd
 } else {
-    puts "\nNo version command defined for $tool, skipping version check."
+    log_warn "No version command defined for $tool, skipping version check."
 }
 
-puts "\nDone updating $tool!"
+log_success "Done updating $tool!"
