@@ -43,6 +43,7 @@ proc usage {} {
     puts "  -i : update icarus/iverilog (uses \$ICARUS_TOP)"
     puts "  -p : update open_pdks       (uses \$OPEN_PDKS)"
     puts "  -o : update openlane2       (uses \$OPENLANE)"
+    puts "  -n : update ngspice         (uses \$NGSPICE_TOP)"
     exit 1
 }
 
@@ -98,9 +99,20 @@ switch -- $flag {
             exit 1
         }
         set dir $::env(MAGIC_TOP)
-        set version_cmd {magic -version}
+        set version_cmd {magic --version}
         set needs_sudo 1
         set special_config "magic"
+    }
+    -n {
+        set tool "ngspice"
+        if {![::info exists ::env(NGSPICE_TOP)]} {
+            log_error "Error: NGSPICE_TOP is not set in your environment."
+            exit 1
+        }
+        set dir $::env(NGSPICE_TOP)
+        set version_cmd {ngspice -v}
+        set needs_sudo 1
+        set special_config "ngspice"
     }
     -y {
         set tool "yosys"
@@ -216,6 +228,8 @@ if {$special_config eq "openlane2"} {
 
 # ================== 2. configure (non-openlane2) ================== #
 
+# ================== Special case: xschem ================== #
+
 if {[file executable "./configure"]} {
     if {$special_config eq "xschem"} {
         # xschem -> force /usr/local
@@ -227,10 +241,10 @@ if {[file executable "./configure"]} {
     log_warn "No ./configure script found, skipping configure step."
 }
 
-# ===== Special case: magic =====
+# ================== Special case: magic ================== #
+
 if {$special_config eq "magic"} {
-    # Magic: "./configure" already ran, now exactly what it tells us:
-    # "Use 'make' to compile and 'make install' to install."
+    # Magic: "./configure" already ran
     run_cmd [list make "-j$jobs"]
 
     set install_cmd [list make install]
@@ -246,6 +260,18 @@ if {$special_config eq "magic"} {
 
     log_success "Done updating $tool!"
     exit 0
+}
+
+# ================== Special case: ngspice ================== #
+
+if {[file executable "./configure"]} {
+    if {$special_config eq "ngspice"} {
+        run_cmd [list ./configure "--prefix=/usr/local --with-x --enable-xspice"]
+    } else {
+        run_cmd {./configure}
+    }
+} else {
+    log_warn "No ./configure script found, skipping configure step."
 }
 
 # ================== 3. make (generic for others) ================== #
