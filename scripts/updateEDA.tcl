@@ -19,7 +19,9 @@ set COLOR_BRIGHT_RED "\033\[91m"
 proc color {txt clr} {
     return "${clr}${txt}\033\[0m"
 }
-
+proc selected_tool {tool} {
+    puts [color "Selected tool: $tool" "$::COLOR_BRIGHT_BLUE$::COLOR_BOLD"]
+}
 proc log_info {msg} {
     puts [color $msg $::COLOR_BRIGHT_CYAN]
 }
@@ -161,7 +163,7 @@ switch -- $flag {
     }
 }
 
-log_info "Selected tool: $tool"
+selected_tool $tool
 log_info "Source directory: $dir"
 
 if {![file isdirectory $dir]} {
