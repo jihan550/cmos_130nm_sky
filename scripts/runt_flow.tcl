@@ -19,7 +19,7 @@
 #       end
 #
 # Optional (recommended for SPICE / techmapping to sky130):
-#   export SKY130_HD_LIB="/home/jihan/eda/open_pdks/sky130/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib"
+#   export SKY130_HD_TT="~/eda/open_pdks/sky130/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib"
 #
 
 # ============================================================
@@ -97,8 +97,8 @@ file mkdir $out_dir
 file mkdir $sim_dir
 file mkdir $synth_dir
 
-set sim_exe  "simv"
-set vcd_file "wave.vcd"
+set sim_exe  "${design_name}_simv"
+set vcd_file "${design_name}_wave.vcd"
 
 # ============================================================
 # Helper Function
@@ -141,7 +141,7 @@ run_cmd "vvp $sim_exe"
 if {[file exists $vcd_file]} {
     run_cmd "gtkwave $vcd_file &"
 } else {
-    puts "!! WARNING: $vcd_file not found. Did your testbench call \$dumpfile(\"wave.vcd\")?"
+    puts "!! WARNING: $vcd_file not found. Did your testbench call \$dumpfile(\"${design_name}_wave.vcd\")?"
 }
 
 cd $cwd
@@ -157,14 +157,14 @@ set yosys_out_v  "$synth_dir/${design_name}_synth.v"
 set yosys_out_j  "$synth_dir/${design_name}.json"
 set yosys_out_sp "$synth_dir/${design_name}_xschem.spice"
 
-# Get SKY130 liberty path from env if available
+# Get SKY130 lib path from env variable
 set have_sky130 0
-if {[info exists ::env(SKY130_HD_LIB)]} {
-    set sky130_lib $::env(SKY130_HD_LIB)
+if {[info exists ::env(SKY130_HD_TT)]} {
+    set sky130_lib $::env(SKY130_HD_TT)
     set have_sky130 1
-    puts "Using SKY130 liberty: $sky130_lib"
+    puts "Using SKY130 lib: $sky130_lib"
 } else {
-    puts "NOTE: SKY130_HD_LIB not set; synthesis will not be tech-mapped to sky130_fd_sc_hd."
+    puts "NOTE: SKY130_HD_TT not set; synthesis will not be tech-mapped to sky130_fd_sc_hd."
 }
 
 set fh [open $yosys_script "w"]
