@@ -125,7 +125,7 @@ proc write_modulefile {tool special_config version install_prefix src_dir} {
 set jobs 1
 if {![catch {exec nproc} n]} {
     if {$n > 0} {
-        set jobs $n
+        set jobs 1
     }
 }
 
