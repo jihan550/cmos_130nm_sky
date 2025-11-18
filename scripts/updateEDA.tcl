@@ -35,9 +35,9 @@ proc log_error {msg} {
 
 proc selected_tool {tool} {
     puts ""
-    puts [color "======================" $::COLOR_BRIGHT_BLUE]
+    puts [color "============================================" $::COLOR_BRIGHT_BLUE]
     puts [color "   SELECTED TOOL: $tool" "$::COLOR_BRIGHT_BLUE$::COLOR_BOLD"]
-    puts [color "======================" $::COLOR_BRIGHT_BLUE]
+    puts [color "============================================" $::COLOR_BRIGHT_BLUE]
     puts ""
 }
 
