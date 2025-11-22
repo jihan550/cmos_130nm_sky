@@ -1,20 +1,13 @@
 #!/usr/bin/env tclsh
 
 # ================== Color Helpers ================== #
-# ANSI color codes (Tcl-safe: brackets escaped)
-set COLOR_RESET  "\033\[0m"
-set COLOR_RED    "\033\[31m"
-set COLOR_GREEN  "\033\[32m"
-set COLOR_YELLOW "\033\[33m"
-set COLOR_BLUE   "\033\[34m"
-set COLOR_MAG    "\033\[35m"
-set COLOR_CYAN   "\033\[36m"
-set COLOR_BOLD   "\033\[1m"
-set COLOR_AMBER  "\033\[93m"  
-set COLOR_BRIGHT_CYAN "\033\[96m" 
-set COLOR_MAGENTA "\033\[95m"
-set COLOR_BRIGHT_BLUE "\033\[94m"
-set COLOR_BRIGHT_RED "\033\[91m"
+set COLOR_RESET        "\033\[0m"
+set COLOR_BRIGHT_RED   "\033\[91m"
+set COLOR_GREEN        "\033\[32m"
+set COLOR_AMBER        "\033\[93m"
+set COLOR_BRIGHT_BLUE  "\033\[94m"
+set COLOR_BRIGHT_CYAN  "\033\[96m"
+set COLOR_BOLD         "\033\[1m"
 
 proc color {txt clr} {
     return "${clr}${txt}\033\[0m"
@@ -55,6 +48,7 @@ proc usage {} {
     exit 1
 }
 
+# Strict runner: aborts on non-zero exit
 proc run_cmd {cmd_list} {
     puts ""
     puts [color ">>> [join $cmd_list { }]" $::COLOR_BRIGHT_BLUE]
@@ -62,6 +56,18 @@ proc run_cmd {cmd_list} {
         log_error "!!! Command failed: [join $cmd_list { }]"
         puts "$result"
         exit 1
+    } else {
+        puts "$result"
+    }
+}
+
+# Soft runner: warns on non-zero, but continues
+proc run_cmd_soft {cmd_list} {
+    puts ""
+    puts [color ">>> [join $cmd_list { }]" $::COLOR_BRIGHT_BLUE]
+    if {[catch {eval exec $cmd_list} result]} {
+        log_warn "Command reported a non-zero status, continuing anyway."
+        puts "$result"
     } else {
         puts "$result"
     }
@@ -125,7 +131,7 @@ proc write_modulefile {tool special_config version install_prefix src_dir} {
 set jobs 1
 if {![catch {exec nproc} n]} {
     if {$n > 0} {
-        set jobs 1
+        set jobs $n
     }
 }
 
@@ -151,7 +157,7 @@ switch -- $flag {
         }
         set dir $::env(XSCHEM_TOP)
         set version_cmd {xschem -v}
-        set needs_sudo 0                 ;# versioned under $HOME
+        set needs_sudo 0
         set special_config "xschem"
     }
     -m {
@@ -162,7 +168,7 @@ switch -- $flag {
         }
         set dir $::env(MAGIC_TOP)
         set version_cmd {magic -version}
-        set needs_sudo 0                 ;# versioned under $HOME
+        set needs_sudo 0
         set special_config "magic"
     }
     -y {
@@ -205,7 +211,6 @@ switch -- $flag {
             exit 1
         }
         set dir $::env(OPEN_PDKS)
-        # open_pdks is special; leave non-versioned for now
         set needs_sudo 1
         set special_config "open_pdks"
     }
@@ -248,34 +253,32 @@ if {$is_git_repo} {
     puts [color ">>> git pull" $::COLOR_BRIGHT_BLUE]
 
     if {[catch {exec git pull} git_out]} {
-        # git returned non-zero exit, but we still want to see the output
         log_warn "git pull reported a non-zero status, continuing anyway."
         puts "$git_out"
-        # DO NOT exit here; maybe it still updated or only gave a warning
     } else {
         puts "$git_out"
-        # Only skip rebuild if it is clearly already up to date
         if {[string match "*Already up to date.*" $git_out] || \
             [string match "*Already up-to-date.*" $git_out]} {
-            log_warn "$tool is already up to date. No rebuild or install needed. 😁"
+            log_success "$tool is already up to date. No rebuild or install needed."
             exit 0
         }
     }
 } else {
     log_warn "Not a git repository (skipping git pull)."
 }
+
 # ================== 2. Special: openlane2 ================== #
 
 if {$special_config eq "openlane2"} {
     if {$is_git_repo} {
         log_info "Updating git submodules for openlane2..."
-        run_cmd {git submodule update --init --recursive}
+        run_cmd_soft {git submodule update --init --recursive}
     }
 
     if {[file exists "pyproject.toml"] || [file exists "setup.py"]} {
         log_info "Detected Python project (pyproject.toml/setup.py)."
         log_info "Running 'pip3 install -e .' for openlane2 (no sudo)."
-        run_cmd {pip3 install -e .}
+        run_cmd_soft {pip3 install -e .}
     } else {
         log_warn "No pyproject.toml or setup.py found; skipping pip install for openlane2."
     }
@@ -300,12 +303,22 @@ set version ""
 set versioned_tools {xschem magic yosys iverilog ngspice}
 
 if {[lsearch -exact $versioned_tools $special_config] != -1} {
-    # Determine version string from git (or fallback to date)
-    set version "dev"
-    if {$is_git_repo && ![catch {exec git describe --tags --always} v]} {
+    # Prefer tag if available, else date-based dev string
+    set version ""
+    if {$is_git_repo && ![catch {exec git describe --tags --exact-match} v]} {
         set version $v
-    } elseif {![catch {exec date +%Y%m%d} d]} {
-        set version "dev-$d"
+    } elseif {!$is_git_repo} {
+        if {![catch {exec date +%Y%m%d} d]} {
+            set version "dev-$d"
+        }
+    } else {
+        if {![catch {exec date +%Y%m%d} d]} {
+            set version "dev-$d"
+        }
+    }
+
+    if {$version eq ""} {
+        set version "dev"
     }
 
     set home $::env(HOME)
@@ -330,16 +343,15 @@ if {[file executable "./configure"]} {
         set cfg_cmd [list ./configure "--prefix=$install_prefix"]
 
         if {$special_config eq "ngspice"} {
-            # ngspice typical configure flags
+            # ngspice typical flags
             lappend cfg_cmd "--with-x" "--enable-xspice"
         }
 
-        run_cmd $cfg_cmd
+        run_cmd_soft $cfg_cmd
     } elseif {$special_config eq "open_pdks"} {
-        # leave open_pdks as system-ish (can refine later)
-        run_cmd {./configure}
+        run_cmd_soft {./configure}
     } else {
-        run_cmd {./configure}
+        run_cmd_soft {./configure}
     }
 } else {
     log_warn "No ./configure script found, skipping configure step."
@@ -348,12 +360,20 @@ if {[file executable "./configure"]} {
 # ================== 5. make & make install ================== #
 
 if {[file exists "Makefile"] || [file exists "makefile"]} {
+    # Build step is the same for everyone
     run_cmd [list make "-j$jobs"]
 
-    set install_cmd [list make install]
-    if {$needs_sudo} {
-        set install_cmd [linsert $install_cmd 0 sudo]
+    # Install step: yosys needs PREFIX, others use standard make install
+    if {$special_config eq "yosys" && $install_prefix ne ""} {
+        # yosys respects PREFIX, no sudo needed (we're under $HOME)
+        set install_cmd [list make "PREFIX=$install_prefix" install]
+    } else {
+        set install_cmd [list make install]
+        if {$needs_sudo} {
+            set install_cmd [linsert $install_cmd 0 sudo]
+        }
     }
+
     run_cmd $install_cmd
 } else {
     log_warn "No Makefile found, skipping 'make' and 'make install'."
