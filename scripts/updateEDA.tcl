@@ -9,21 +9,40 @@ set COLOR_BRIGHT_BLUE  "\033\[94m"
 set COLOR_BRIGHT_CYAN  "\033\[96m"
 set COLOR_BOLD         "\033\[1m"
 
+# Global logfile handle (set later)
+set log_fh ""
+
 proc color {txt clr} {
     return "${clr}${txt}\033\[0m"
 }
 
+proc log_to_file {level msg} {
+    global log_fh
+    if {$log_fh eq ""} {
+        return
+    }
+    set ts [clock format [clock seconds] -format "%Y-%m-%d %H:%M:%S"]
+    # write plain text to file (no ANSI), e.g. "2025-11-23 21:08:32 [INFO] Logging to: ..."
+    puts $log_fh "$ts \[$level] $msg"
+    flush $log_fh
+}
+
+
 proc log_info {msg} {
     puts [color $msg $::COLOR_BRIGHT_CYAN]
+    log_to_file "INFO" $msg
 }
 proc log_success {msg} {
     puts [color $msg $::COLOR_GREEN]
+    log_to_file "SUCCESS" $msg
 }
 proc log_warn {msg} {
     puts [color $msg $::COLOR_AMBER]
+    log_to_file "WARN" $msg
 }
 proc log_error {msg} {
     puts [color $msg $::COLOR_BRIGHT_RED]
+    log_to_file "ERROR" $msg
 }
 
 proc selected_tool {tool} {
@@ -32,6 +51,7 @@ proc selected_tool {tool} {
     puts [color "   SELECTED TOOL: $tool" "$::COLOR_BRIGHT_BLUE$::COLOR_BOLD"]
     puts [color "============================================" $::COLOR_BRIGHT_BLUE]
     puts ""
+    log_to_file "INFO" "Selected tool: $tool"
 }
 
 # ================== Helper Procs ================== #
@@ -50,50 +70,63 @@ proc usage {} {
 
 # Strict runner with real-time output
 proc run_cmd {cmd_list} {
+    global log_fh
+    set cmd_str [join $cmd_list { }]
     puts ""
-    puts [color ">>> [join $cmd_list { }]" $::COLOR_BRIGHT_BLUE]
+    puts [color ">>> $cmd_str" $::COLOR_BRIGHT_BLUE]
+    log_to_file "CMD" ">>> $cmd_str"
 
-    # Create a pipeline so output streams live
-    set cmd "|[join $cmd_list { }]"
-    if {[catch {open $cmd r} pipe]} {
-        log_error "!!! Failed to open pipeline: [join $cmd_list { }]"
+    # pipeline for streaming output
+    set pipe_cmd "|$cmd_str"
+    if {[catch {open $pipe_cmd r} pipe]} {
+        log_error "!!! Failed to run: $cmd_str"
+        log_to_file "ERROR" "Failed to open pipeline for: $cmd_str"
         exit 1
     }
 
-    # Stream output line-by-line as it happens
     fconfigure $pipe -buffering line -blocking 1
-
     while {[gets $pipe line] >= 0} {
         puts $line
+        if {$log_fh ne ""} {
+            puts $log_fh $line
+        }
     }
 
-    # Check exit status
     if {[catch {close $pipe} status]} {
-        log_error "!!! Command failed: [join $cmd_list { }]"
+        log_error "!!! Command failed: $cmd_str"
         puts $status
+        log_to_file "ERROR" "Command failed: $cmd_str :: $status"
         exit 1
     }
 }
 
-
+# Soft runner: real-time output, but non-zero exit is a warning
 proc run_cmd_soft {cmd_list} {
+    global log_fh
+    set cmd_str [join $cmd_list { }]
     puts ""
-    puts [color ">>> [join $cmd_list { }]" $::COLOR_BRIGHT_BLUE]
+    puts [color ">>> $cmd_str" $::COLOR_BRIGHT_BLUE]
+    log_to_file "CMD" ">>> $cmd_str"
 
-    set cmd "|[join $cmd_list { }]"
-    if {[catch {open $cmd r} pipe]} {
-        log_warn "Command failed to start, continuing anyway."
+    set pipe_cmd "|$cmd_str"
+    if {[catch {open $pipe_cmd r} pipe]} {
+        log_warn "Command failed to start (soft): $cmd_str"
+        log_to_file "WARN" "Failed to open pipeline (soft) for: $cmd_str"
         return
     }
 
     fconfigure $pipe -buffering line -blocking 1
     while {[gets $pipe line] >= 0} {
         puts $line
+        if {$log_fh ne ""} {
+            puts $log_fh $line
+        }
     }
 
     if {[catch {close $pipe} status]} {
-        log_warn "Command reported a non-zero status, continuing anyway."
+        log_warn "Command reported a non-zero status (soft): $cmd_str"
         puts $status
+        log_to_file "WARN" "Soft command non-zero: $cmd_str :: $status"
     }
 }
 
@@ -265,6 +298,22 @@ cd $dir
 log_info "Source directory: $dir"
 log_info "Current directory: [pwd]"
 
+# ================== 0. Setup logfile ================== #
+
+set home $::env(HOME)
+set log_root "$home/eda/update_logs"
+if {![file isdirectory $log_root]} {
+    file mkdir $log_root
+}
+set log_tool_dir "$log_root/$special_config"
+if {![file isdirectory $log_tool_dir]} {
+    file mkdir $log_tool_dir
+}
+set ts [clock format [clock seconds] -format "%Y%m%d-%H%M%S"]
+set log_path "$log_tool_dir/${special_config}_$ts.log"
+set log_fh [open $log_path "w"]
+log_info "Logging to: $log_path"
+
 # ================== 1. git pull (if git repo) ================== #
 
 set is_git_repo 0
@@ -273,23 +322,13 @@ if {![catch {exec git rev-parse --is-inside-work-tree} _]} {
 }
 
 if {$is_git_repo} {
-    puts ""
-    puts [color ">>> git pull" $::COLOR_BRIGHT_BLUE]
-
-    if {[catch {exec git pull} git_out]} {
-        log_warn "git pull reported a non-zero status, continuing anyway."
-        puts "$git_out"
-    } else {
-        puts "$git_out"
-        if {[string match "*Already up to date.*" $git_out] || \
-            [string match "*Already up-to-date.*" $git_out]} {
-            log_success "$tool is already up to date. No rebuild or install needed."
-            exit 0
-        }
-    }
+    run_cmd_soft {git pull}
 } else {
     log_warn "Not a git repository (skipping git pull)."
 }
+
+# If git said already up-to-date, we still rebuild unless you want early-exit.
+# (You can add early-exit logic back if you prefer.)
 
 # ================== 2. Special: openlane2 ================== #
 
@@ -315,6 +354,7 @@ if {$special_config eq "openlane2"} {
     }
 
     log_success "Done updating $tool!"
+    if {$log_fh ne ""} { close $log_fh }
     exit 0
 }
 
@@ -336,7 +376,6 @@ if {[lsearch -exact $versioned_tools $special_config] != -1} {
         set version "dev"
     }
 
-    set home $::env(HOME)
     set install_dirname "${special_config}-installs"
     set install_prefix "$home/eda/$install_dirname/$version"
 
@@ -416,3 +455,7 @@ if {[llength $version_cmd] > 0} {
 }
 
 log_success "Done updating $tool!"
+
+if {$log_fh ne ""} {
+    close $log_fh
+}
