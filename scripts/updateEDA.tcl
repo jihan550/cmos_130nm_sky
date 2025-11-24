@@ -48,28 +48,52 @@ proc usage {} {
     exit 1
 }
 
-# Strict runner: aborts on non-zero exit
+# Strict runner with real-time output
 proc run_cmd {cmd_list} {
     puts ""
     puts [color ">>> [join $cmd_list { }]" $::COLOR_BRIGHT_BLUE]
-    if {[catch {eval exec $cmd_list} result]} {
-        log_error "!!! Command failed: [join $cmd_list { }]"
-        puts "$result"
+
+    # Create a pipeline so output streams live
+    set cmd "|[join $cmd_list { }]"
+    if {[catch {open $cmd r} pipe]} {
+        log_error "!!! Failed to open pipeline: [join $cmd_list { }]"
         exit 1
-    } else {
-        puts "$result"
+    }
+
+    # Stream output line-by-line as it happens
+    fconfigure $pipe -buffering line -blocking 1
+
+    while {[gets $pipe line] >= 0} {
+        puts $line
+    }
+
+    # Check exit status
+    if {[catch {close $pipe} status]} {
+        log_error "!!! Command failed: [join $cmd_list { }]"
+        puts $status
+        exit 1
     }
 }
 
-# Soft runner: warns on non-zero, but continues
+
 proc run_cmd_soft {cmd_list} {
     puts ""
     puts [color ">>> [join $cmd_list { }]" $::COLOR_BRIGHT_BLUE]
-    if {[catch {eval exec $cmd_list} result]} {
+
+    set cmd "|[join $cmd_list { }]"
+    if {[catch {open $cmd r} pipe]} {
+        log_warn "Command failed to start, continuing anyway."
+        return
+    }
+
+    fconfigure $pipe -buffering line -blocking 1
+    while {[gets $pipe line] >= 0} {
+        puts $line
+    }
+
+    if {[catch {close $pipe} status]} {
         log_warn "Command reported a non-zero status, continuing anyway."
-        puts "$result"
-    } else {
-        puts "$result"
+        puts $status
     }
 }
 
@@ -304,20 +328,11 @@ set versioned_tools {xschem magic yosys iverilog ngspice}
 
 if {[lsearch -exact $versioned_tools $special_config] != -1} {
     # Prefer tag if available, else date-based dev string
-    set version ""
     if {$is_git_repo && ![catch {exec git describe --tags --exact-match} v]} {
         set version $v
-    } elseif {!$is_git_repo} {
-        if {![catch {exec date +%Y%m%d} d]} {
-            set version "dev-$d"
-        }
+    } elseif {![catch {exec date +%Y%m%d} d]} {
+        set version "dev-$d"
     } else {
-        if {![catch {exec date +%Y%m%d} d]} {
-            set version "dev-$d"
-        }
-    }
-
-    if {$version eq ""} {
         set version "dev"
     }
 
@@ -338,12 +353,11 @@ if {[lsearch -exact $versioned_tools $special_config] != -1} {
 # ================== 4. configure ================== #
 
 if {[file executable "./configure"]} {
-    if {$install_prefix ne ""} {
-        # Any versioned tool: configure with computed prefix
+    if {$install_prefix ne "" && $special_config ne "yosys"} {
+        # Autoconf-style tools with prefix (xschem, magic, iverilog, ngspice)
         set cfg_cmd [list ./configure "--prefix=$install_prefix"]
 
         if {$special_config eq "ngspice"} {
-            # ngspice typical flags
             lappend cfg_cmd "--with-x" "--enable-xspice"
         }
 
@@ -351,6 +365,7 @@ if {[file executable "./configure"]} {
     } elseif {$special_config eq "open_pdks"} {
         run_cmd_soft {./configure}
     } else {
+        # Yosys or others where configure doesn't matter for prefix
         run_cmd_soft {./configure}
     }
 } else {
@@ -360,12 +375,12 @@ if {[file executable "./configure"]} {
 # ================== 5. make & make install ================== #
 
 if {[file exists "Makefile"] || [file exists "makefile"]} {
-    # Build step is the same for everyone
+    # Build
     run_cmd [list make "-j$jobs"]
 
-    # Install step: yosys needs PREFIX, others use standard make install
+    # Install
     if {$special_config eq "yosys" && $install_prefix ne ""} {
-        # yosys respects PREFIX, no sudo needed (we're under $HOME)
+        # Yosys: PREFIX is passed to make install
         set install_cmd [list make "PREFIX=$install_prefix" install]
     } else {
         set install_cmd [list make install]
@@ -378,6 +393,8 @@ if {[file exists "Makefile"] || [file exists "makefile"]} {
 } else {
     log_warn "No Makefile found, skipping 'make' and 'make install'."
 }
+
+log_info "DEBUG: tool=$tool special_config=$special_config version='$version' install_prefix='$install_prefix'"
 
 # ================== 6. Generate modulefiles for versioned tools ================== #
 
