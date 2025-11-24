@@ -397,7 +397,7 @@ if {[file executable "./configure"]} {
         set cfg_cmd [list ./configure "--prefix=$install_prefix"]
 
         if {$special_config eq "ngspice"} {
-            lappend cfg_cmd "--with-x" "--enable-xspice"
+             lappend cfg_cmd "--with-x" "--enable-xspice" "--disable-openmp"
         }
 
         run_cmd_soft $cfg_cmd
@@ -415,7 +415,13 @@ if {[file executable "./configure"]} {
 
 if {[file exists "Makefile"] || [file exists "makefile"]} {
     # Build
-    run_cmd [list make "-j$jobs"]
+    if {$special_config eq "ngspice"} {
+        set jobs 4
+        run_cmd [list make "-j$jobs"]
+    } else {
+        run_cmd [list make "-j$jobs"]
+    }
+
 
     # Install
     if {$special_config eq "yosys" && $install_prefix ne ""} {
