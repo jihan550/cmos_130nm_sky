@@ -224,7 +224,7 @@ switch -- $flag {
             exit 1
         }
         set dir $::env(MAGIC_TOP)
-        set version_cmd {magic -version}
+        set version_cmd {magic --version}
         set needs_sudo 0
         set special_config "magic"
     }
