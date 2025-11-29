@@ -394,6 +394,22 @@ if {[lsearch -exact $versioned_tools $special_config] != -1} {
 if {[file executable "./configure"]} {
     if {$install_prefix ne "" && $special_config ne "yosys"} {
         # Autoconf-style tools with prefix (xschem, magic, iverilog, ngspice)
+        if {$special_config eq "yosys"} {
+            # Yosys: do NOT run ./configure like autotools.
+            # Instead: full clean + submodules (if git) before build.
+            if {$is_git_repo} {
+                log_info "Updating git submodules for yosys..."
+                run_cmd_soft {git submodule update --init --recursive}
+            }
+
+            if {[file exists "Makefile"]} {
+                log_info "Cleaning yosys tree with 'make distclean'..."
+                run_cmd_soft {make clean}
+            } else {
+                log_warn "No Makefile yet, skipping 'make distclean' for yosys."
+            }
+        }
+        
         set cfg_cmd [list ./configure "--prefix=$install_prefix"]
 
         if {$special_config eq "ngspice"} {
