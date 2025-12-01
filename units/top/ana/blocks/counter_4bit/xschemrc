@@ -1,0 +1,5 @@
+set XSCHEM_LIBRARY_PATH \
+    /home/jihan/eda/open_pdks/sky130/sky130A/libs.tech/xschem
+
+source /usr/local/share/pdk/sky130B/libs.tech/xschem/xschemrc
+

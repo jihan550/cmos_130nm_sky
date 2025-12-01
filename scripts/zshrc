@@ -1,0 +1,383 @@
+# Silence Powerlevel10k instant prompt warning about console output
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+
+# ================== GIT STATUS CHECK =================== #
+
+# Just definitions here: no output during init.
+check_git_folder() {
+    local repo="$1"
+    [ ! -d "$repo/.git" ] && return
+
+    local changes
+    changes=$(git -C "$repo" status --short)
+    
+    print -P "%F{cyan}[$repo] git fetch:%f"
+    changes=$(git -C "$repo" fetch)
+
+    print -P "%F{cyan}[$repo] git status:%f"
+
+
+    if [[ -z "$changes" ]]; then
+        echo "  (clean)"
+    else
+        echo "$changes"
+    fi
+    echo
+}
+
+
+eda_git_status_on_first_prompt() {
+    # Run only once per shell session
+    if [[ -n "${__EDA_GIT_STATUS_SHOWN-}" ]]; then
+        return
+    fi
+    __EDA_GIT_STATUS_SHOWN=1
+
+    # Call for each repo you care about
+    check_git_folder "$HOME/eda/yosys"
+    check_git_folder "$HOME/eda/xschem-src"
+    check_git_folder "$HOME/eda/ngspice_git"
+    check_git_folder "$HOME/eda/magic"
+    check_git_folder "$HOME/eda/iverilog"
+    check_git_folder "$HOME/eda/openlane2"
+    check_git_folder "$HOME/eda/open_pdks"
+}
+
+# Hook our function to run before the first prompt (after init completes)
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd eda_git_status_on_first_prompt
+
+# ================== GIT STATUS CHECK END ================== #
+
+
+
+export PATH="/usr/local/bin:$PATH"
+
+# #==================PDK FILE PATHS==================#
+# export SKY130_HD_TT="/home/jihan/eda/open_pdks/sky130/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib"
+# export SKY130_HD_FF="/home/jihan/eda/open_pdks/sky130/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__ff_100C_1v95.lib"
+# export SKY130_HD_SS="/home/jihan/eda/open_pdks/sky130/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__ss_n40C_1v60.lib"
+
+# #==================PROJECT FILE PATHS==================#
+# export PDK_ROOT="/home/jihan/eda/open_pdks/sky130"
+# export PDK="sky130A"
+export WORKAREA="/home/jihan/projects/units/top/rtl/"
+export TOP="/home/jihan/projects/units/top/"
+# #==================EDA TOOLS PATHS==================#
+# export XSCHEM_TOP="/home/jihan/eda/xschem-src"
+# export MAGIC_TOP="/home/jihan/eda/magic"
+# export ICARUS_TOP="/home/jihan/eda/iverilog"
+# export YOSYS_TOP="/home/jihan/eda/yosys"
+# export OPEN_PDKS="/home/jihan/eda/open_pdks"
+# export OPENLANE="/home/jihan/eda/openlane2"
+# export NGSPICE_TOP="/home/jihan/eda/ngspice_git"
+# export HOME='/home/jihan'
+# export MODULEPATH="$HOME/modules/eda:$MODULEPATH"
+# export MODULEPATH="$HOME/modules/eda:$MODULEPATH"
+
+# ================== EDA AUTO-SETUP ================== #
+# Base EDA root
+export EDA_ROOT="$HOME/eda"
+export OPEN_PDKS="$EDA_ROOT/open_pdks"
+
+# Auto-detect Sky130 PDK variant and set PDK_ROOT + PDK
+setup_pdk_env() {
+  # Prefer sky130A, fall back to sky130B if needed
+  local skyroot="$OPEN_PDKS/sky130"
+
+  if [[ -d "$skyroot/sky130A/libs.tech/xschem" ]]; then
+    export PDK_ROOT="$skyroot"      # directory that CONTAINS sky130A
+    export PDK="sky130A"
+  elif [[ -d "$skyroot/sky130B/libs.tech/xschem" ]]; then
+    export PDK_ROOT="$skyroot"
+    export PDK="sky130B"
+  else
+    echo "[EDA] WARNING: No sky130A/sky130B with libs.tech/xschem found under $skyroot" >&2
+  fi
+
+  # Optionally set useful liberty file paths if sky130A exists
+  if [[ -d "$skyroot/sky130A/libs.ref/sky130_fd_sc_hd/lib" ]]; then
+    export SKY130_HD_TT="$skyroot/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib"
+    export SKY130_HD_FF="$skyroot/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__ff_100C_1v95.lib"
+    export SKY130_HD_SS="$skyroot/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__ss_n40C_1v60.lib"
+  fi
+}
+
+# EDA tools locations (if you keep sources under ~/eda)
+setup_eda_tools() {
+  export XSCHEM_TOP="$EDA_ROOT/xschem-src"
+  export MAGIC_TOP="$EDA_ROOT/magic"
+  export ICARUS_TOP="$EDA_ROOT/iverilog"
+  export YOSYS_TOP="$EDA_ROOT/yosys"
+  export OPENLANE="$EDA_ROOT/openlane2"
+  export NGSPICE_TOP="$EDA_ROOT/ngspice_git"
+
+  # Optional: prepend their typical bin locations to PATH if they exist
+  for d in \
+    "$XSCHEM_TOP" \
+    "$MAGIC_TOP" \
+    "$YOSYS_TOP" \
+    "$ICARUS_TOP" \
+    "$NGSPICE_TOP"; do
+    [[ -d "$d" ]] && PATH="$d:$PATH"
+  done
+}
+
+# Quick environment checker
+eda_env() {
+  local green="\033[0;32m"
+  local red="\033[0;31m"
+  local yellow="\033[0;33m"
+  local cyan="\033[0;96m"
+  local reset="\033[0m"
+
+  printf "${cyan}=== EDA ENV ===${reset}\n"
+
+  # Vars that correspond to actual paths
+  for v in EDA_ROOT OPEN_PDKS PDK_ROOT \
+           XSCHEM_TOP MAGIC_TOP YOSYS_TOP ICARUS_TOP NGSPICE_TOP OPENLANE \
+           SKY130_HD_TT SKY130_HD_FF SKY130_HD_SS; do
+
+    eval val="\${$v}"
+
+    if [[ -z "$val" ]]; then
+      printf "%-16s = ${yellow}(not set)${reset}\n" "$v"
+    else
+      if [[ -d "$val" || -f "$val" ]]; then
+        printf "%-16s = %s  ${green}[OK]${reset}\n" "$v" "$val"
+      else
+        printf "%-16s = %s  ${red}[MISSING]${reset}\n" "$v" "$val"
+      fi
+    fi
+  done
+
+  # PDK is symbolic, not a path → no [OK]/[MISSING]
+  if [[ -z "$PDK" ]]; then
+    printf "%-16s = ${yellow}(not set)${reset}\n" "PDK"
+  else
+    printf "%-16s = ${green}%s${reset}\n" "PDK" "$PDK"
+  fi
+
+  printf "${cyan}================${reset}\n"
+}
+
+
+# Call auto-setup when shell starts
+setup_pdk_env
+setup_eda_tools
+# ================== EDA AUTO-SETUP END ================== #
+
+
+
+# export RUNT="/home/jihan/projects/scripts/runt_flow.tcl"
+
+RUNT() {
+    /home/jihan/projects/scripts/runt_flow.tcl "$@"
+}
+
+update_eda() {
+    /home/jihan/projects/scripts/updateEDA.tcl "$@"
+}
+
+edaclean() {
+    /home/jihan/projects/scripts/eda_clean.tcl "$@"
+}
+
+spicesym() {
+    /home/jihan/eda/xschem-src/src/make_sch_from_spice.awk "$@"
+}
+
+# ======================================================= #
+
+# Enable Environment Modules in zsh
+if [ -f /usr/share/modules/init/zsh ]; then
+    source /usr/share/modules/init/zsh
+elif [ -f /etc/profile.d/modules.sh ]; then
+    source /etc/profile.d/modules.sh
+fi
+
+# Make sure our personal module tree is on MODULEPATH _after_ init
+if command -v module >/dev/null 2>&1; then
+  module use -a "$HOME/modules/eda"
+
+  # Prefer our magic module over any system one
+  module unload magic 2>/dev/null
+
+  module load xschem/default
+  module load magic/default
+  module load yosys/default
+  module load iverilog/default
+fi
+
+
+#===================================================#
+
+# ================== SYNC STALE MODULEFILES ================== #
+sync_eda_modules() {
+  for tool in magic yosys iverilog xschem ngspice; do
+    local moddir="$HOME/modules/eda/$tool"
+    local instroot="$HOME/eda/${tool}-installs"
+
+    [[ -d "$moddir" ]] || continue
+
+    for mf in "$moddir"/*; do
+      local base="${mf##*/}"
+
+      # Keep the "default" symlink/file
+      [[ "$base" == "default" ]] && continue
+
+      local instdir="$instroot/$base"
+      if [[ ! -d "$instdir" ]]; then
+        echo "[module-clean] Removing stale modulefile: $mf (no install $instdir)"
+        rm -f -- "$mf"
+      fi
+    done
+  done
+}
+
+# Run this once at startup
+sync_eda_modules
+# ================== END MODULE SYNC ================== #
+
+
+# ===================================================== #
+
+which magic
+which xschem
+which iverilog
+which yosys 
+
+# ===================================================== #
+
+
+
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+
+# Path to your Oh My Zsh installation.
+export ZSH="$HOME/.oh-my-zsh"
+
+# Set name of the theme to load --- if set to "random", it will
+# load a random theme each time Oh My Zsh is loaded, in which case,
+# to know which specific one was loaded, run: echo $RANDOM_THEME
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+ZSH_THEME="powerlevel10k/powerlevel10k"
+
+# Set list of themes to pick from when loading at random
+# Setting this variable when ZSH_THEME=random will cause zsh to load
+# a theme from this variable instead of looking in $ZSH/themes/
+# If set to an empty array, this variable will have no effect.
+# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+
+# Uncomment the following line to use case-sensitive completion.
+# CASE_SENSITIVE="true"
+
+# Uncomment the following line to use hyphen-insensitive completion.
+# Case-sensitive completion must be off. _ and - will be interchangeable.
+# HYPHEN_INSENSITIVE="true"
+
+# Uncomment one of the following lines to change the auto-update behavior
+# zstyle ':omz:update' mode disabled  # disable automatic updates
+# zstyle ':omz:update' mode auto      # update automatically without asking
+# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
+
+# Uncomment the following line to change how often to auto-update (in days).
+# zstyle ':omz:update' frequency 13
+
+# Uncomment the following line if pasting URLs and other text is messed up.
+# DISABLE_MAGIC_FUNCTIONS="true"
+
+# Uncomment the following line to disable colors in ls.
+# DISABLE_LS_COLORS="true"
+
+# Uncomment the following line to disable auto-setting terminal title.
+# DISABLE_AUTO_TITLE="true"
+
+# Uncomment the following line to enable command auto-correction.
+ENABLE_CORRECTION="true"
+
+# Uncomment the following line to display red dots whilst waiting for completion.
+# You can also set it to another string to have that shown instead of the default red dots.
+# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
+# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
+# COMPLETION_WAITING_DOTS="true"
+
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# You can set one of the optional three formats:
+# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+# or set a custom format using the strftime function format specifications,
+# see 'man strftime' for details.
+# HIST_STAMPS="mm/dd/yyyy"
+
+# Would you like to use another custom folder than $ZSH/custom?
+# ZSH_CUSTOM=/path/to/new-custom-folder
+
+# Which plugins would you like to load?
+# Standard plugins can be found in $ZSH/plugins/
+# Custom plugins may be added to $ZSH_CUSTOM/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(git)
+
+source $ZSH/oh-my-zsh.sh
+
+# User configuration
+
+# export MANPATH="/usr/local/man:$MANPATH"
+
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+
+# Preferred editor for local and remote sessions
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='nvim'
+# fi
+
+# Compilation flags
+# export ARCHFLAGS="-arch $(uname -m)"
+
+HISTSIZE=20
+SAVEHIST=20
+
+# Set personal aliases, overriding those provided by Oh My Zsh libs,
+# plugins, and themes. Aliases can be placed here, though Oh My Zsh
+# users are encouraged to define aliases within a top-level file in
+# the $ZSH_CUSTOM folder, with .zsh extension. Examples:
+# - $ZSH_CUSTOM/aliases.zsh
+# - $ZSH_CUSTOM/macos.zsh
+# For a full list of active aliases, run `alias`.
+#
+# Example aliases
+# alias zshconfig="mate ~/.zshrc"
+# alias ohmyzsh="mate ~/.oh-my-zsh"
+eval "$(starship init zsh)"
+alias ls='lsd'
+alias cdhome='cd ~/'
+alias cdprojects='cd ~/projects'
+alias virtuoso='xschem'
+alias goeda='cd ~/eda'
+alias gozsh="code ~/.zshrc &"
+
+
+alias listall="alias | sed -E \"s/^([^=]+)='(.*)'/\\1 → \\2/\""
+
+[ -f ~/.zsh_aliases ] && source ~/.zsh_aliases
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

@@ -1,0 +1,80 @@
+# # --- Navigation ---
+# alias cdhome='cd ~/'
+# alias cdprojects='cd ~/projects'
+# alias goeda='cd ~/eda'
+
+# # --- Tools ---
+# alias ls='lsd'
+
+# # --- EDA / Work ---
+# alias virtuoso='xschem'
+
+# # --- Show all my custom aliases, grouped by section ---
+# listaliases() {
+#   echo "=== Navigation ==="
+#   echo "cdhome     → cd ~/"
+#   echo "cdprojects → cd ~/projects"
+#   echo "goeda      → cd ~/eda"
+#   echo
+
+#   echo "=== Tools ==="
+#   echo "ls         → lsd"
+#   echo
+
+#   echo "=== EDA / Work ==="
+#   echo "virtuoso   → xschem"
+# }
+# alias listaliases='listaliases'
+
+# --- Navigation ---
+alias cdhome='cd ~/'
+alias cdprojects='cd ~/projects'
+alias cdunits='cd ~/projects/units/'
+alias goeda='cd ~/eda'
+alias gosim='cd ~/.xschem/simulations'
+alias act='source /home/jihan/eda/openlane2/.venv/bin/activate'
+alias goscripts='cd ~/projects/scripts/'
+alias gortl='cd ~/projects/units/top/rtl/ && source /home/jihan/eda/openlane2/.venv/bin/activate'
+alias goana='cd ~/projects/units/top/ana'
+alias golog='cd ~/eda/update_logs'
+
+# --- Tools ---
+alias ls='lsd'
+
+# --- EDA / Work ---
+alias virtuoso='xschem'
+
+alias gozsh='code ~/.zshrc'
+
+alias update='sudo apt update && sudo apt upgrade'
+
+# --- Meta: list my aliases grouped by section (auto) ---
+# If an alias with this name exists, remove it so we can define a function.
+unalias listaliases 2>/dev/null
+
+listaliases() {
+  emulate -L zsh
+  local file=${ZSH_ALIASES_FILE:-$HOME/.zsh_aliases}
+
+  awk '
+    BEGIN { section = "" }
+    # Section header lines like: "# --- Section Name ---"
+    /^\s*#\s*---/ {
+      sec = $0
+      sub(/^.*---[[:space:]]*/, "", sec)
+      sub(/[[:space:]]*---.*$/, "", sec)
+      section = sec
+      next
+    }
+    # Alias lines: alias name='\''value'\''
+    /^\s*alias[[:space:]]+[A-Za-z0-9_.-]+=/ {
+      if (!(section in seen)) {
+        printf("\n=== %s ===\n", (section == "" ? "Misc" : section))
+        seen[section] = 1
+      }
+      match($0, /alias[[:space:]]+([^=]+)=['\''"](.+)['\''"]$/, m)
+      name = m[1]; val = m[2]
+      printf("%-14s → %s\n", name, val)
+    }
+  ' "$file" | sed "1{/^$/d;}"
+}
