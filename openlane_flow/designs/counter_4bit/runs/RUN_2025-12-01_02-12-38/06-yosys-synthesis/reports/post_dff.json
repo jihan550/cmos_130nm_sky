@@ -1,0 +1,49 @@
+{
+   "creator": "Yosys 0.46 (git sha1 e97731b9dda91fa5fa53ed87df7c34163ba59a41, clang++ 17.0.6 -fPIC -O3)",
+   "invocation": "stat -json -liberty /home/jihan/projects/openlane_flow/designs/counter_4bit/runs/RUN_2025-12-01_02-12-38/tmp/4aa4450b251b47d0b94b9cae74e080e3.lib ",
+   "modules": {
+      "\\counter_4bit": {
+         "num_wires":         7,
+         "num_wire_bits":     16,
+         "num_pub_wires":     3,
+         "num_pub_wire_bits": 6,
+         "num_ports":         3,
+         "num_port_bits":     6,
+         "num_memories":      0,
+         "num_memory_bits":   0,
+         "num_processes":     0,
+         "num_cells":         10,
+         "area":              105.100800,
+         "num_cells_by_type": {
+            "$_ANDNOT_": 1,
+            "$_NAND_": 1,
+            "$_NOT_": 1,
+            "$_XNOR_": 1,
+            "$_XOR_": 2,
+            "sky130_fd_sc_hd__dfrtp_2": 4
+         }
+      }
+   },
+      "design": {
+         "num_wires":         7,
+         "num_wire_bits":     16,
+         "num_pub_wires":     3,
+         "num_pub_wire_bits": 6,
+         "num_ports":         3,
+         "num_port_bits":     6,
+         "num_memories":      0,
+         "num_memory_bits":   0,
+         "num_processes":     0,
+         "num_cells":         10,
+         "area":              105.100800,
+         "num_cells_by_type": {
+            "$_ANDNOT_": 1,
+            "$_NAND_": 1,
+            "$_NOT_": 1,
+            "$_XNOR_": 1,
+            "$_XOR_": 2,
+            "sky130_fd_sc_hd__dfrtp_2": 4
+         }
+      }
+}
+

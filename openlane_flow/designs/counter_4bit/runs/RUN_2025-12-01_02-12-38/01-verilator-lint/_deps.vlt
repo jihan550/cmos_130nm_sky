@@ -1,0 +1,5 @@
+`verilator_config
+lint_off -rule DECLFILENAME
+lint_off -rule EOFNEWLINE
+lint_off -rule UNDRIVEN -file "/home/jihan/projects/openlane_flow/designs/counter_4bit/runs/RUN_2025-12-01_02-12-38/tmp/5117b846068c4a69a0d5805225c17f37.bb.v"
+lint_off -rule UNUSEDSIGNAL -file "/home/jihan/projects/openlane_flow/designs/counter_4bit/runs/RUN_2025-12-01_02-12-38/tmp/5117b846068c4a69a0d5805225c17f37.bb.v"
