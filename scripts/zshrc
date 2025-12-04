@@ -195,6 +195,280 @@ spicesym() {
     /home/jihan/eda/xschem-src/src/make_sch_from_spice.awk "$@"
 }
 
+# --- OpenLane2 helper function ---
+openlane_run() {
+    # 1. Path to your OpenLane2 virtualenv
+    local venv="$HOME/eda/openlane2/.venv"
+
+    # 2. Activate the venv
+    if [ -d "$venv" ]; then
+        source "$venv/bin/activate"
+    else
+        echo "❌ OpenLane2 venv not found at $venv"
+        return 1
+    fi
+
+    # 3. Require one argument: path to config.json
+    if [ $# -eq 0 ]; then
+        echo "Usage: openlane_run <path/to/config.json>"
+        deactivate
+        return 1
+    fi
+
+    local cfg="$1"
+
+    if [ ! -f "$cfg" ]; then
+        echo "❌ Config file not found: $cfg"
+        return 1
+    fi
+
+    # 4. Run OpenLane2 in dockerized mode
+    echo "🚀 Running OpenLane2 with config: $cfg"
+    openlane --dockerized "$cfg"
+
+    # 5. Deactivate the venv automatically afterwards
+    deactivate
+}
+
+
+# --- Create OpenLane2 project template ---
+mk_openlane_design() {
+    local dir=""
+    local rtlname=""
+
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -d|--dir)
+                dir="$2"
+                shift 2
+                ;;
+            -f|--file)
+                rtlname="$2"
+                shift 2
+                ;;
+            *)
+                echo "❌ Unknown option: $1"
+                echo "Usage: mk_openlane_design -d <dir> [-f <rtl_file_basename>]"
+                return 1
+                ;;
+        esac
+    done
+
+    # Required: directory
+    if [[ -z "$dir" ]]; then
+        echo "❌ Missing required -d <dir>"
+        echo "Usage: mk_openlane_design -d <dir> [-f <rtl_file_basename>]"
+        return 1
+    fi
+
+    # If RTL name not given → default to directory name
+    if [[ -z "$rtlname" ]]; then
+        rtlname="$dir"
+    fi
+
+    # Create directory structure
+    mkdir -p "$dir/src"
+
+    # Create skeleton RTL if not exists
+    rtlpath="$dir/src/${rtlname}.v"
+    if [[ ! -f "$rtlpath" ]]; then
+        cat > "$rtlpath" <<EOF
+module ${rtlname} (
+    input  clk,
+    input  rst_n,
+    output reg [3:0] count
+);
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n)
+            count <= 4'd0;
+        else
+            count <= count + 1'b1;
+    end
+endmodule
+EOF
+        echo "📄 Created RTL: $rtlpath"
+    else
+        echo "⚠️ RTL already exists: $rtlpath"
+    fi
+
+    # Create config.json
+    cfg="$dir/config.json"
+    cat > "$cfg" <<EOF
+{
+  "DESIGN_NAME": "${rtlname}",
+  "VERILOG_FILES": [
+    "dir::src/${rtlname}.v"
+  ],
+  "CLOCK_PORT": "clk",
+  "CLOCK_PERIOD": 20.0,
+  "FP_SIZING": "absolute",
+  "DIE_AREA": "0 0 200 200",
+  "FP_CORE_UTIL": 10,
+  "PDK": "sky130A",
+  "STD_CELL_LIBRARY": "sky130_fd_sc_hd"
+}
+EOF
+
+    echo "📄 Created config: $cfg"
+
+    # Final message
+    echo "✅ OpenLane2 design created at: $dir/"
+}
+
+
+# eda_help() {
+#     # ANSI colors for Matrix vibes
+#     local RESET=$'\e[0m'
+#     local BOLD=$'\e[1m'
+#     local DIM=$'\e[2m'
+#     local GREEN=$'\e[32m'
+#     local BRIGHT_GREEN=$'\e[92m'
+#     local GRAY=$'\e[90m'
+
+#     clear
+#     printf "${GREEN}"
+#     printf '###############################################\n'
+#     printf '#                                             #\n'
+#     printf '#      %sEDA CONSOLE – FUNCTION MAP%s             %s#\n' "${BRIGHT_GREEN}${BOLD}" "${RESET}${GREEN}" "${GREEN}"
+#     printf '#                                             #\n'
+#     printf '###############################################\n'
+#     printf "${RESET}\n"
+
+#     # Helper to print a section
+#     _sec() {
+#         local name="$1"
+#         local desc="$2"
+#         printf "${BRIGHT_GREEN}${BOLD}▶ ${name}${RESET}\n"
+#         printf "  ${DIM}${desc}${RESET}\n"
+#     }
+
+#     _usage() {
+#         local txt="$1"
+#         printf "  ${GREEN}Usage:${RESET}  ${txt}\n\n"
+#     }
+
+#     # RUNT
+#     _sec "RUNT" "Wrapper for /home/jihan/projects/scripts/runt_flow.tcl – your main RTL/sim/synth flow driver."
+#     _usage "RUNT [args...]
+#          e.g.  RUNT -t=my_top.sv -tb=<optional.sv> -f my_top"
+
+#     # update_eda
+#     _sec "update_eda" "Wrapper for /home/jihan/projects/scripts/updateEDA.tcl – updates/builds your EDA tools (yosys, magic, ngspice, etc.)."
+#     _usage "update_eda [tool | options...]
+#          e.g. update_eda yosys
+#               update_eda -y"
+
+#     # edaclean
+#     _sec "edaclean" "Wrapper for /home/jihan/projects/scripts/eda_clean.tcl – cleans logs/build/output dirs in your EDA env."
+#     _usage "edaclean [options...]"
+
+#     # spicesym
+#     _sec "spicesym" "Wrapper for xschem's make_sch_from_spice.awk – generate schematics/symbols from SPICE netlists."
+#     _usage "spicesym <netlist.spice> [args...]
+#          e.g. spicesym counter_4bit.spice > counter_4bit.sch"
+
+#     # openlane_run
+#     _sec "openlane_run" "Activate OpenLane2 venv and run OpenLane in dockerized mode on a given config.json."
+#     _usage "openlane_run <path/to/config.json>
+#          e.g. openlane_run designs/counter_4bit/config.json"
+
+#     # mk_openlane_design
+#     _sec "mk_openlane_design" "Create an OpenLane2 project skeleton:
+#          <dir>/
+#            config.json
+#            src/<rtl>.v
+#        If -f not given, RTL basename = dir name."
+#     _usage "mk_openlane_design -d <dir> [-f <rtl_basename>]
+#          e.g. mk_openlane_design -d counter_4bit
+#               mk_openlane_design -d alu8 -f alu_core"
+
+#     printf "${GRAY}${DIM}Tip: type ${GREEN}functions${GRAY} to see all defined shell functions.${RESET}\n\n"
+# }
+
+
+
+eda_help() {
+    # ANSI colors
+    local RESET=$'\e[0m'
+    local BOLD=$'\e[1m'
+    local DIM=$'\e[2m'
+    local GREEN=$'\e[32m'
+    local BRIGHT_GREEN=$'\e[92m'
+    local GRAY=$'\e[90m'
+
+    clear
+
+    # Smooth line-printing effect
+    _println() {
+        printf "%s\n" "$1"
+        sleep 0.12   # <-- nice speed: not too slow, not instant
+    }
+
+    printf "${GREEN}"
+
+    _println '###############################################'
+    _println '#                                             #'
+
+    printf '#      '
+    printf "%sEDA CONSOLE – FUNCTION MAP%s" "${BRIGHT_GREEN}${BOLD}" "${RESET}${GREEN}"
+    _println '             #'
+
+    _println '#                                             #'
+    _println '###############################################'
+    printf "${RESET}\n"
+
+    # Slight pause before sections
+    sleep 0.1
+
+    # Section printer
+    _sec() {
+        printf "${BRIGHT_GREEN}${BOLD}▶ %s${RESET}\n" "$1"
+        printf "  ${DIM}%s${RESET}\n" "$2"
+        sleep 0.05
+    }
+
+    # Usage printer
+    _usage() {
+        printf "  ${GREEN}Usage:${RESET}  %s\n\n" "$1"
+        sleep 0.03
+    }
+
+    ###############################
+    #       Function Entries      #
+    ###############################
+
+    _sec "RUNT" "Run your main RTL/sim/synth Tcl flow driver."
+    _usage "RUNT [args...]
+         e.g. RUNT -t=my_top.sv -tb=<testbench.sv> -f my_top"
+
+    _sec "update_eda" "Update/build your EDA tools (yosys, magic, ngspice, etc.)."
+    _usage "update_eda [tool | options...]
+         e.g. update_eda yosys
+              update_eda -y"
+
+    _sec "edaclean" "Clean logs/build/output dirs in your EDA environment."
+    _usage "edaclean"
+
+    _sec "spicesym" "Generate xschem .sch or .sym from a SPICE netlist."
+    _usage "spicesym <file.spice>
+         e.g. spicesym counter.spice > counter.sch"
+
+    _sec "openlane_run" "Activate OL2 venv + run OpenLane2 in Docker."
+    _usage "openlane_run <path/to/config.json>
+         e.g. openlane_run designs/counter_4bit/config.json"
+
+    _sec "mk_openlane_design" "Create an OpenLane2 project skeleton with config + RTL."
+    _usage "mk_openlane_design -d <dir> [-f <rtl_basename>]
+         e.g. mk_openlane_design -d counter_4bit
+              mk_openlane_design -d alu8 -f alu_core"
+
+    printf "${GRAY}${DIM}Tip: type ${GREEN}functions${GRAY} to see all defined shell functions.${RESET}\n\n"
+}
+
+
+
+
 # ======================================================= #
 
 # Enable Environment Modules in zsh
