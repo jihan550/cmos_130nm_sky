@@ -1,0 +1,81 @@
+Reading OpenROAD database at '/home/jihan/projects/openlane_flow/designs/counter_4bit/runs/RUN_2025-12-04_01-46-29/24-openroad-ioplacement/counter_4bit.odb'…
+Reading library file at '/home/jihan/.volare/volare/sky130/versions/0fe599b2afb6708d281543108caf8310912f54af/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib'…
+Reading design constraints file at '/nix/store/ss2cw3sxbrwwx9jl0rrppbw4kgcmgi2n-python3-3.11.9-env/lib/python3.11/site-packages/openlane/scripts/base.sdc'…
+[INFO] Using clock clk…
+[INFO] Setting output delay to: 3.0
+[INFO] Setting input delay to: 3.0
+[INFO] Setting load to: 0.033442
+[INFO] Setting clock uncertainty to: 0.25
+[INFO] Setting clock transition to: 0.1499999999999999944488848768742172978818416595458984375
+[INFO] Setting timing derate to: 5%
+[INFO] Setting RC values…
+[INFO] Setting signal min routing layer to: met1 and clock min routing layer to met1. 
+[INFO] Setting signal max routing layer to: met5 and clock max routing layer to met5. 
++ global_placement -density 0.5 -timing_driven -routability_driven -pad_right 0 -pad_left 0 -init_wirelength_coef 0.25
+[INFO GPL-0002] DBU: 1000
+[INFO GPL-0003] SiteSize: (  0.460  2.720 ) um
+[INFO GPL-0004] CoreBBox: (  5.520 10.880 ) ( 194.120 187.680 ) um
+[INFO GPL-0006] NumInstances:               609
+[INFO GPL-0007] NumPlaceInstances:           10
+[INFO GPL-0008] NumFixedInstances:          599
+[INFO GPL-0009] NumDummyInstances:            0
+[INFO GPL-0010] NumNets:                     12
+[INFO GPL-0011] NumPins:                     41
+[INFO GPL-0012] DieBBox:  (  0.000  0.000 ) ( 200.000 200.000 ) um
+[INFO GPL-0013] CoreBBox: (  5.520 10.880 ) ( 194.120 187.680 ) um
+[INFO GPL-0016] CoreArea:             33344.480 um^2
+[INFO GPL-0017] NonPlaceInstsArea:     1074.781 um^2
+[INFO GPL-0018] PlaceInstsArea:         163.907 um^2
+[INFO GPL-0019] Util:                     0.508 %
+[INFO GPL-0020] StdInstsArea:           163.907 um^2
+[INFO GPL-0021] MacroInstsArea:           0.000 um^2
+[InitialPlace]  Iter: 1 CG residual: 0.00000003 HPWL: 729691
+[InitialPlace]  Iter: 2 CG residual: 0.00000009 HPWL: 471459
+[InitialPlace]  Iter: 3 CG residual: 0.00000005 HPWL: 370583
+[InitialPlace]  Iter: 4 CG residual: 0.00000000 HPWL: 353121
+[InitialPlace]  Iter: 5 CG residual: 0.00000011 HPWL: 352075
+[INFO GPL-0031] FillerInit:NumGCells:      1054
+[INFO GPL-0032] FillerInit:NumGNets:         12
+[INFO GPL-0033] FillerInit:NumGPins:         41
+[INFO GPL-0023] TargetDensity:            0.500
+[INFO GPL-0024] AvrgPlaceInstArea:       16.391 um^2
+[INFO GPL-0025] IdealBinArea:            32.781 um^2
+[INFO GPL-0026] IdealBinCnt:               1017
+[INFO GPL-0027] TotalBinArea:         33344.480 um^2
+[INFO GPL-0028] BinCnt:        16     16
+[INFO GPL-0029] BinSize: ( 11.788 11.050 )
+[INFO GPL-0030] NumBins: 256
+[NesterovSolve] Iter:    1 overflow: 0.016 HPWL: 286113
+[INFO GPL-0100] Timing-driven: executing resizer for reweighting nets.
+[INFO GPL-0101] Timing-driven: worst slack 1.11e-08
+[INFO GPL-0103] Timing-driven: weighted 1 nets.
+[NesterovSolve] Snapshot saved at iter = 0
+[INFO GPL-0075] Routability numCall: 1 inflationIterCnt: 1 bloatIterCnt: 0
+[INFO GPL-0036] TileBBox: (    0    0 ) ( 6900 6900 ) DBU
+[INFO GPL-0038] TileCnt:      28   28
+[INFO GPL-0040] NumTiles: 784
+[INFO GPL-0081] TotalRouteOverflow: 0
+[INFO GPL-0082] OverflowTileCnt: 0
+[INFO GPL-0083] 0.5%RC: 0.5834103971719742
+[INFO GPL-0084] 1.0%RC: 0.5511391684412956
+[INFO GPL-0085] 2.0%RC: 0.5267488434910774
+[INFO GPL-0086] 5.0%RC: 0.4923033133149147
+[INFO GPL-0087] FinalRC: 0.5672748
+[INFO GPL-0077] FinalRC lower than targetRC(1.01), routability not needed.
+[NesterovSolve] Finished with Overflow: 0.016231
+[INFO] Setting RC values…
+Setting global connections for newly added cells…
+[INFO] Setting global connections...
+Updating metrics…
+Cell type report:                       Count       Area
+  Fill cell                               130     487.97
+  Tap cell                                469     586.81
+  Inverter                                  1       3.75
+  Sequential cell                           4     105.10
+  Multi-Input combinational cell            5      55.05
+  Total                                   609    1238.69
+Writing OpenROAD database to '/home/jihan/projects/openlane_flow/designs/counter_4bit/runs/RUN_2025-12-04_01-46-29/27-openroad-globalplacement/counter_4bit.odb'…
+Writing netlist to '/home/jihan/projects/openlane_flow/designs/counter_4bit/runs/RUN_2025-12-04_01-46-29/27-openroad-globalplacement/counter_4bit.nl.v'…
+Writing powered netlist to '/home/jihan/projects/openlane_flow/designs/counter_4bit/runs/RUN_2025-12-04_01-46-29/27-openroad-globalplacement/counter_4bit.pnl.v'…
+Writing layout to '/home/jihan/projects/openlane_flow/designs/counter_4bit/runs/RUN_2025-12-04_01-46-29/27-openroad-globalplacement/counter_4bit.def'…
+Writing timing constraints to '/home/jihan/projects/openlane_flow/designs/counter_4bit/runs/RUN_2025-12-04_01-46-29/27-openroad-globalplacement/counter_4bit.sdc'…

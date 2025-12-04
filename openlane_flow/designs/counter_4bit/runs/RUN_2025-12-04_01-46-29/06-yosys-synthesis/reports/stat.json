@@ -1,0 +1,49 @@
+{
+   "creator": "Yosys 0.46 (git sha1 e97731b9dda91fa5fa53ed87df7c34163ba59a41, clang++ 17.0.6 -fPIC -O3)",
+   "invocation": "stat -json -liberty /home/jihan/projects/openlane_flow/designs/counter_4bit/runs/RUN_2025-12-04_01-46-29/tmp/bca84277bcbd46e1a4e465af305cc853.lib ",
+   "modules": {
+      "\\counter_4bit": {
+         "num_wires":         9,
+         "num_wire_bits":     12,
+         "num_pub_wires":     3,
+         "num_pub_wire_bits": 6,
+         "num_ports":         3,
+         "num_port_bits":     6,
+         "num_memories":      0,
+         "num_memory_bits":   0,
+         "num_processes":     0,
+         "num_cells":         10,
+         "area":              163.907200,
+         "num_cells_by_type": {
+            "sky130_fd_sc_hd__a21oi_2": 1,
+            "sky130_fd_sc_hd__and3_2": 1,
+            "sky130_fd_sc_hd__dfrtp_2": 4,
+            "sky130_fd_sc_hd__inv_2": 1,
+            "sky130_fd_sc_hd__nor2_2": 1,
+            "sky130_fd_sc_hd__xor2_2": 2
+         }
+      }
+   },
+      "design": {
+         "num_wires":         9,
+         "num_wire_bits":     12,
+         "num_pub_wires":     3,
+         "num_pub_wire_bits": 6,
+         "num_ports":         3,
+         "num_port_bits":     6,
+         "num_memories":      0,
+         "num_memory_bits":   0,
+         "num_processes":     0,
+         "num_cells":         10,
+         "area":              163.907200,
+         "num_cells_by_type": {
+            "sky130_fd_sc_hd__a21oi_2": 1,
+            "sky130_fd_sc_hd__and3_2": 1,
+            "sky130_fd_sc_hd__dfrtp_2": 4,
+            "sky130_fd_sc_hd__inv_2": 1,
+            "sky130_fd_sc_hd__nor2_2": 1,
+            "sky130_fd_sc_hd__xor2_2": 2
+         }
+      }
+}
+
