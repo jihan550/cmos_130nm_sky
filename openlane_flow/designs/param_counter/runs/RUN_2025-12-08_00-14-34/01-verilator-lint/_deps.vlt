@@ -1,0 +1,5 @@
+`verilator_config
+lint_off -rule DECLFILENAME
+lint_off -rule EOFNEWLINE
+lint_off -rule UNDRIVEN -file "/home/jihan/projects/openlane_flow/designs/param_counter/runs/RUN_2025-12-08_00-14-34/tmp/a86da7e2998f4d6ea1736119f5c07750.bb.v"
+lint_off -rule UNUSEDSIGNAL -file "/home/jihan/projects/openlane_flow/designs/param_counter/runs/RUN_2025-12-08_00-14-34/tmp/a86da7e2998f4d6ea1736119f5c07750.bb.v"

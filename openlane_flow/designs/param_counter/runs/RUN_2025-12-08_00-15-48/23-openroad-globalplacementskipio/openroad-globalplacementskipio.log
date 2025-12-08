@@ -1,0 +1,85 @@
+Reading OpenROAD database at '/home/jihan/projects/openlane_flow/designs/param_counter/runs/RUN_2025-12-08_00-15-48/20-openroad-generatepdn/param_counter.odb'…
+Reading library file at '/home/jihan/.volare/volare/sky130/versions/0fe599b2afb6708d281543108caf8310912f54af/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib'…
+Reading design constraints file at '/nix/store/ss2cw3sxbrwwx9jl0rrppbw4kgcmgi2n-python3-3.11.9-env/lib/python3.11/site-packages/openlane/scripts/base.sdc'…
+[INFO] Using clock clk…
+[INFO] Setting output delay to: 3.0
+[INFO] Setting input delay to: 3.0
+[INFO] Setting load to: 0.033442
+[INFO] Setting clock uncertainty to: 0.25
+[INFO] Setting clock transition to: 0.1499999999999999944488848768742172978818416595458984375
+[INFO] Setting timing derate to: 5%
++ global_placement -density 0.65 -skip_io -pad_right 0 -pad_left 0 -init_wirelength_coef 0.25
+[INFO GPL-0002] DBU: 1000
+[INFO GPL-0003] SiteSize: (  0.460  2.720 ) um
+[INFO GPL-0004] CoreBBox: (  5.520 10.880 ) ( 29.440 32.640 ) um
+[INFO GPL-0006] NumInstances:                40
+[INFO GPL-0007] NumPlaceInstances:           19
+[INFO GPL-0008] NumFixedInstances:           21
+[INFO GPL-0009] NumDummyInstances:            0
+[INFO GPL-0010] NumNets:                     27
+[INFO GPL-0011] NumPins:                     77
+[INFO GPL-0012] DieBBox:  (  0.000  0.000 ) ( 35.095 45.815 ) um
+[INFO GPL-0013] CoreBBox: (  5.520 10.880 ) ( 29.440 32.640 ) um
+[INFO GPL-0016] CoreArea:               520.499 um^2
+[INFO GPL-0017] NonPlaceInstsArea:       66.314 um^2
+[INFO GPL-0018] PlaceInstsArea:         231.472 um^2
+[INFO GPL-0019] Util:                    50.964 %
+[INFO GPL-0020] StdInstsArea:           231.472 um^2
+[INFO GPL-0021] MacroInstsArea:           0.000 um^2
+[INFO GPL-0031] FillerInit:NumGCells:        24
+[INFO GPL-0032] FillerInit:NumGNets:         27
+[INFO GPL-0033] FillerInit:NumGPins:         77
+[INFO GPL-0023] TargetDensity:            0.650
+[INFO GPL-0024] AvrgPlaceInstArea:       12.183 um^2
+[INFO GPL-0025] IdealBinArea:            18.743 um^2
+[INFO GPL-0026] IdealBinCnt:                 27
+[INFO GPL-0027] TotalBinArea:           520.499 um^2
+[INFO GPL-0028] BinCnt:         4      4
+[INFO GPL-0029] BinSize: (  5.980  5.440 )
+[INFO GPL-0030] NumBins: 16
+[NesterovSolve] Iter:    1 overflow: 0.641 HPWL: 61023
+[NesterovSolve] Iter:   10 overflow: 0.641 HPWL: 56614
+[NesterovSolve] Iter:   20 overflow: 0.641 HPWL: 56603
+[NesterovSolve] Iter:   30 overflow: 0.641 HPWL: 56583
+[NesterovSolve] Iter:   40 overflow: 0.641 HPWL: 56575
+[NesterovSolve] Iter:   50 overflow: 0.641 HPWL: 56568
+[NesterovSolve] Iter:   60 overflow: 0.641 HPWL: 56567
+[NesterovSolve] Iter:   70 overflow: 0.641 HPWL: 56601
+[NesterovSolve] Iter:   80 overflow: 0.641 HPWL: 56747
+[NesterovSolve] Iter:   90 overflow: 0.641 HPWL: 56784
+[NesterovSolve] Iter:  100 overflow: 0.641 HPWL: 56760
+[NesterovSolve] Iter:  110 overflow: 0.641 HPWL: 56967
+[NesterovSolve] Iter:  120 overflow: 0.637 HPWL: 56633
+[NesterovSolve] Iter:  130 overflow: 0.622 HPWL: 56724
+[NesterovSolve] Iter:  140 overflow: 0.639 HPWL: 57901
+[NesterovSolve] Iter:  150 overflow: 0.640 HPWL: 56891
+[NesterovSolve] Iter:  160 overflow: 0.639 HPWL: 57074
+[NesterovSolve] Iter:  170 overflow: 0.638 HPWL: 57713
+[NesterovSolve] Iter:  180 overflow: 0.632 HPWL: 59603
+[NesterovSolve] Iter:  190 overflow: 0.579 HPWL: 80728
+[NesterovSolve] Iter:  200 overflow: 0.520 HPWL: 108237
+[NesterovSolve] Iter:  210 overflow: 0.463 HPWL: 118525
+[NesterovSolve] Iter:  220 overflow: 0.412 HPWL: 132031
+[NesterovSolve] Iter:  230 overflow: 0.352 HPWL: 148145
+[NesterovSolve] Iter:  240 overflow: 0.267 HPWL: 167898
+[NesterovSolve] Iter:  250 overflow: 0.140 HPWL: 192127
+[NesterovSolve] Iter:  260 overflow: 0.181 HPWL: 170609
+[NesterovSolve] Iter:  270 overflow: 0.144 HPWL: 173873
+[NesterovSolve] Iter:  280 overflow: 0.099 HPWL: 175653
+[NesterovSolve] Finished with Overflow: 0.098735
+[INFO] Setting RC values…
+Setting global connections for newly added cells…
+[INFO] Setting global connections...
+Updating metrics…
+Cell type report:                       Count       Area
+  Fill cell                                16      60.06
+  Tap cell                                  5       6.26
+  Inverter                                  2       7.51
+  Sequential cell                           4     105.10
+  Multi-Input combinational cell           13     118.86
+  Total                                    40     297.79
+Writing OpenROAD database to '/home/jihan/projects/openlane_flow/designs/param_counter/runs/RUN_2025-12-08_00-15-48/23-openroad-globalplacementskipio/param_counter.odb'…
+Writing netlist to '/home/jihan/projects/openlane_flow/designs/param_counter/runs/RUN_2025-12-08_00-15-48/23-openroad-globalplacementskipio/param_counter.nl.v'…
+Writing powered netlist to '/home/jihan/projects/openlane_flow/designs/param_counter/runs/RUN_2025-12-08_00-15-48/23-openroad-globalplacementskipio/param_counter.pnl.v'…
+Writing layout to '/home/jihan/projects/openlane_flow/designs/param_counter/runs/RUN_2025-12-08_00-15-48/23-openroad-globalplacementskipio/param_counter.def'…
+Writing timing constraints to '/home/jihan/projects/openlane_flow/designs/param_counter/runs/RUN_2025-12-08_00-15-48/23-openroad-globalplacementskipio/param_counter.sdc'…

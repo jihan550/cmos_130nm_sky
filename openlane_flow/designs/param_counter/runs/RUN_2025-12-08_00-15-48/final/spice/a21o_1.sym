@@ -1,0 +1,23 @@
+v {xschem version=3.4.8RC file_version=1.3}
+K {type=primitive
+format="@name @@A1 @@A2 @@B1 @VGND @VNB @VPB @VPWR @@X @prefix\\\\a21o_1"
+template="name=x1 VGND=VGND VNB=VNB VPB=VPB VPWR=VPWR prefix=sky130_fd_sc_hd__ "
+extra="VGND VNB VPB VPWR prefix"}
+T {@symname} 0 -6 0 0 0.3 0.3 {hcenter=true}
+T {@name} 135 -52 0 0 0.2 0.2 {}
+L 4 -130 -40 130 -40 {}
+L 4 -130 40 130 40 {}
+L 4 -130 -40 -130 40 {}
+L 4 130 -40 130 40 {}
+B 5 147.5 -32.5 152.5 -27.5 {name=A1 dir=inout }
+L 7 130 -30 150 -30 {}
+T {A1} 125 -34 0 1 0.2 0.2 {}
+B 5 147.5 -12.5 152.5 -7.5 {name=A2 dir=inout }
+L 7 130 -10 150 -10 {}
+T {A2} 125 -14 0 1 0.2 0.2 {}
+B 5 147.5 7.5 152.5 12.5 {name=B1 dir=inout }
+L 7 130 10 150 10 {}
+T {B1} 125 6 0 1 0.2 0.2 {}
+B 5 147.5 27.5 152.5 32.5 {name=X dir=inout }
+L 7 130 30 150 30 {}
+T {X} 125 26 0 1 0.2 0.2 {}

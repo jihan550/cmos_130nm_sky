@@ -1,0 +1,14 @@
+%Warning-WIDTHTRUNC: /home/jihan/projects/openlane_flow/designs/param_counter/src/param_counter.sv:46:34: Logical operator LOGAND expects 1 bit on the LHS, but LHS's VARREF 'SATURATE' generates 32 bits.
+                                                                                                        : ... note: In instance 'param_counter'
+   46 |                     if (SATURATE && count == MAX_VAL) begin
+      |                                  ^~
+                     ... For warning description see https://verilator.org/warn/WIDTHTRUNC?v=5.018
+                     ... Use "/* verilator lint_off WIDTHTRUNC */" and lint_on around source to disable this message.
+%Warning-WIDTHTRUNC: /home/jihan/projects/openlane_flow/designs/param_counter/src/param_counter.sv:54:34: Logical operator LOGAND expects 1 bit on the LHS, but LHS's VARREF 'SATURATE' generates 32 bits.
+                                                                                                        : ... note: In instance 'param_counter'
+   54 |                     if (SATURATE && count == MIN_VAL) begin
+      |                                  ^~
+%Warning-WIDTHTRUNC: /home/jihan/projects/openlane_flow/designs/param_counter/src/param_counter.sv:45:21: Logical operator LOGNOT expects 1 bit on the LHS, but LHS's VARREF 'DOWN' generates 32 bits.
+                                                                                                        : ... note: In instance 'param_counter'
+   45 |                 if (!DOWN) begin
+      |                     ^

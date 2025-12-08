@@ -1,0 +1,21 @@
+{
+  "DESIGN_NAME": "param_counter",
+  "VERILOG_FILES": [
+    "dir::src/param_counter.sv"
+  ],
+  "CLOCK_PORT": "clk",
+  "CLOCK_PERIOD": 20.0,
+
+  "FP_SIZING": "relative",
+
+  "STD_CELL_LIBRARY": "sky130_fd_sc_hd",
+  
+  "pdk::sky130A": {
+    "MAX_FANOUT_CONSTRAINT": 6,
+    "FP_CORE_UTIL": 40,
+    "PL_TARGET_DENSITY_PCT": 65,
+    "scl::sky130_fd_sc_hd": {
+      "CLOCK_PERIOD": 15.0
+    }
+  }
+}

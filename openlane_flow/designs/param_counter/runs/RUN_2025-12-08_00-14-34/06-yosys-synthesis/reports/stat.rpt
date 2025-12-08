@@ -1,0 +1,31 @@
+108. Printing statistics.
+
+=== param_counter ===
+
+   Number of wires:                 21
+   Number of wire bits:             27
+   Number of public wires:           6
+   Number of public wire bits:      12
+   Number of ports:                  6
+   Number of port bits:             12
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                 19
+     sky130_fd_sc_hd__a21o_2         1
+     sky130_fd_sc_hd__a21oi_2        1
+     sky130_fd_sc_hd__a2bb2o_2       1
+     sky130_fd_sc_hd__a41o_2         1
+     sky130_fd_sc_hd__dfrtp_2        4
+     sky130_fd_sc_hd__inv_2          2
+     sky130_fd_sc_hd__nand2_2        2
+     sky130_fd_sc_hd__nand4_2        1
+     sky130_fd_sc_hd__nor2_2         1
+     sky130_fd_sc_hd__o211a_2        2
+     sky130_fd_sc_hd__o221a_2        1
+     sky130_fd_sc_hd__o31a_2         1
+     sky130_fd_sc_hd__or2_2          1
+
+   Chip area for module '\param_counter': 231.472000
+     of which used for sequential elements: 105.100800 (45.41%)
+

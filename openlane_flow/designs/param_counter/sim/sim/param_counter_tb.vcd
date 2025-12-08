@@ -1,0 +1,197 @@
+$date
+	Sun Dec  7 19:56:54 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module param_counter_tb $end
+$var wire 4 ! count [3:0] $end
+$var reg 1 " clk $end
+$var reg 1 # en $end
+$var reg 1 $ load $end
+$var reg 4 % load_value [3:0] $end
+$var reg 1 & rst_n $end
+$scope module dut $end
+$var wire 1 " clk $end
+$var wire 1 # en $end
+$var wire 1 $ load $end
+$var wire 4 ' load_value [3:0] $end
+$var wire 1 & rst_n $end
+$var parameter 32 ( DOWN $end
+$var parameter 4 ) MAX_VAL $end
+$var parameter 4 * MIN_VAL $end
+$var parameter 32 + SATURATE $end
+$var parameter 32 , WIDTH $end
+$var reg 4 - count [3:0] $end
+$scope begin counter_logic $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b100 ,
+b1 +
+b0 *
+b1111 )
+b0 (
+$end
+#0
+$dumpvars
+b0 -
+b0 '
+0&
+b0 %
+0$
+0#
+0"
+b0 !
+$end
+#10000
+1"
+#20000
+0"
+#25000
+1&
+#30000
+1"
+#40000
+0"
+#45000
+1#
+#50000
+b1 !
+b1 -
+1"
+#60000
+0"
+#70000
+b10 !
+b10 -
+1"
+#80000
+0"
+#90000
+b11 !
+b11 -
+1"
+#100000
+0"
+#110000
+b100 !
+b100 -
+1"
+#120000
+0"
+#130000
+b101 !
+b101 -
+1"
+#140000
+0"
+#150000
+b110 !
+b110 -
+1"
+#160000
+0"
+#170000
+b111 !
+b111 -
+1"
+#180000
+0"
+#190000
+b1000 !
+b1000 -
+1"
+#200000
+0"
+#210000
+b1001 !
+b1001 -
+1"
+#220000
+0"
+#230000
+b1010 !
+b1010 -
+1"
+#240000
+0"
+#245000
+b1010 %
+b1010 '
+1$
+#250000
+1"
+#260000
+0"
+#265000
+0$
+#270000
+b1011 !
+b1011 -
+1"
+#280000
+0"
+#290000
+b1100 !
+b1100 -
+1"
+#300000
+0"
+#310000
+b1101 !
+b1101 -
+1"
+#320000
+0"
+#330000
+b1110 !
+b1110 -
+1"
+#340000
+0"
+#350000
+b1111 !
+b1111 -
+1"
+#360000
+0"
+#370000
+1"
+#380000
+0"
+#390000
+1"
+#400000
+0"
+#410000
+1"
+#420000
+0"
+#430000
+1"
+#440000
+0"
+#450000
+1"
+#460000
+0"
+#465000
+0#
+#470000
+1"
+#480000
+0"
+#490000
+1"
+#500000
+0"
+#510000
+1"
+#515000
