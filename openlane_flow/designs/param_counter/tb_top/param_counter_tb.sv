@@ -54,7 +54,11 @@ module param_counter_tb;
     load = 1'b0; // Stop loading
     #200;
     en = 1'b0; // Disable counting
+    
     #50;
+    rst_n = 1'b0; // Assert reset
+    
+    #20;
     $finish;
   end
 
