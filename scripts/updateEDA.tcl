@@ -390,42 +390,51 @@ if {[lsearch -exact $versioned_tools $special_config] != -1} {
 }
 
 # ================== 4. configure ================== #
+# First: special-case yosys, since it doesn't use ./configure
+if {$special_config eq "yosys"} {
+    if {$is_git_repo} {
+        log_info "Updating git submodules for yosys..."
+        run_cmd_soft {git submodule update --init --recursive}
+    }
 
-if {[file executable "./configure"]} {
-    if {$install_prefix ne "" && $special_config ne "yosys"} {
-        # Autoconf-style tools with prefix (xschem, magic, iverilog, ngspice)
-        if {$special_config eq "yosys"} {
-            # Yosys: do NOT run ./configure like autotools.
-            # Instead: full clean + submodules (if git) before build.
-            if {$is_git_repo} {
-                log_info "Updating git submodules for yosys..."
-                run_cmd_soft {git submodule update --init --recursive}
-            }
+    if {[file exists "Makefile"]} {
+        log_info "Cleaning yosys tree with 'make clean'..."
+        run_cmd_soft {make clean}
+    } else {
+        log_warn "No Makefile yet, skipping 'make clean' for yosys."
+    }
 
-            if {[file exists "Makefile"]} {
-                log_info "Cleaning yosys tree with 'make distclean'..."
-                run_cmd_soft {make clean}
-            } else {
-                log_warn "No Makefile yet, skipping 'make distclean' for yosys."
-            }
+    # Nothing more to do here in the configure step for yosys.
+    # Just return or fall through depending on how your script is organized.
+} elseif {[file executable "./configure"]} {
+
+    # Tools that actually *have* a configure script
+    if {$special_config eq "open_pdks"} {
+
+        # open_pdks weirdness: often wants bare ./configure
+        log_info "Running ./configure for open_pdks (no prefix)..."
+        run_cmd_soft {./configure}
+
+    } else {
+        # Autoconf-style tools (xschem, magic, iverilog, ngspice, etc.)
+
+        set cfg_cmd [list ./configure]
+        if {$install_prefix ne ""} {
+            lappend cfg_cmd "--prefix=$install_prefix"
         }
-        
-        set cfg_cmd [list ./configure "--prefix=$install_prefix"]
 
         if {$special_config eq "ngspice"} {
-             lappend cfg_cmd "--with-x" "--enable-xspice" "--disable-openmp"
+            lappend cfg_cmd "--with-x" "--enable-xspice" "--disable-openmp"
         }
 
+        log_info "Running: [join $cfg_cmd { }]"
         run_cmd_soft $cfg_cmd
-    } elseif {$special_config eq "open_pdks"} {
-        run_cmd_soft {./configure}
-    } else {
-        # Yosys or others where configure doesn't matter for prefix
-        run_cmd_soft {./configure}
     }
+
 } else {
     log_warn "No ./configure script found, skipping configure step."
 }
+
 
 # ================== 5. make & make install ================== #
 
